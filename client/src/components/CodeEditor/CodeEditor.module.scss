@@ -1,0 +1,8 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-text-sizes" as textSizes;
+
+.codeEditorWrapper {
+  background-color: colors.$primary;
+  height: calc(100vh - 60px);
+  width: 100%;
+}

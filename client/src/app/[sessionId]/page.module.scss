@@ -1,0 +1,44 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-text-sizes" as textSizes;
+
+.editorOptionBar {
+  background-color: colors.$primary-variant;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  justify-content: space-between;
+  color: colors.$slate;
+
+  .left {
+    a {
+      color: colors.$slate;
+      text-decoration: none;
+      font-weight: 900;
+      @include textSizes.text-4xl;
+      display: block;
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    i {
+      padding: 10px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      cursor: pointer;
+
+      &:hover {
+        background-color: colors.$slate-7;
+      }
+    }
+  }
+}
