@@ -1,0 +1,12 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+
+.button {
+  background-color: colors.$white;
+  padding: 10px;
+  outline: unset;
+  border: unset;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 7px;
+  font-weight: 20px;
+}

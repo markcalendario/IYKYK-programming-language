@@ -1,0 +1,23 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+
+.input {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  p {
+    font-weight: 600;
+    color: colors.$primary;
+  }
+
+  input {
+    width: 100%;
+    background-color: transparent;
+    outline: 0;
+    border: 0;
+    padding: 10px;
+    background-color: rgba($color: colors.$primary, $alpha: 0.1);
+    border-bottom: colors.$primary 0.5px solid;
+  }
+}

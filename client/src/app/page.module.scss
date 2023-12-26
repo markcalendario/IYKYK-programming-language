@@ -1,0 +1,42 @@
+@use "../styles/abstracts/variables-colors" as colors;
+@use "../styles/abstracts/mixins-text-sizes" as textSizes;
+@use "../styles/layouts/responsive" as responsive;
+
+.home {
+  background-color: colors.$primary;
+  min-height: 100vh;
+
+  .container {
+    @include responsive.container;
+
+    padding: 100px 0;
+
+    .wrapper {
+      text-align: center;
+      padding: 70px 30px;
+      display: flex;
+      margin: auto;
+      background-color: colors.$slate;
+      border-radius: 7px;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 500px;
+
+      .title {
+        font-weight: 900;
+        color: colors.$primary;
+        @include textSizes.text-5xl;
+      }
+
+      .description {
+        color: colors.$primary;
+      }
+
+      .join,
+      .createNew {
+        background-color: colors.$primary;
+        color: colors.$slate;
+      }
+    }
+  }
+}

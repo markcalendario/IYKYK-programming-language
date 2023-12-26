@@ -1,3 +1,5 @@
+@use "../abstracts/variables-colors" as colors;
+
 * {
   padding: 0;
   margin: 0;
@@ -6,4 +8,17 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+body {
+  background-color: colors.$slate;
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px colors.$slate-3 solid;
+}
+
+p {
+  font-weight: 500;
 }
