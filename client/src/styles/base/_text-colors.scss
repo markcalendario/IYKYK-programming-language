@@ -1,0 +1,93 @@
+@use "../abstracts/variables-colors" as colors;
+
+.text-slate {
+  color: colors.$slate;
+}
+
+.text-slate-1 {
+  color: colors.$slate-1;
+}
+
+.text-slate-2 {
+  color: colors.$slate-2;
+}
+
+.text-slate-3 {
+  color: colors.$slate-3;
+}
+
+.text-slate-4 {
+  color: colors.$slate-4;
+}
+
+.text-slate-5 {
+  color: colors.$slate-5;
+}
+
+.text-slate-6 {
+  color: colors.$slate-6;
+}
+
+.text-slate-7 {
+  color: colors.$slate-7;
+}
+
+.text-slate-8 {
+  color: colors.$slate-8;
+}
+
+.text-slate-9 {
+  color: colors.$slate-9;
+}
+
+.text-red {
+  color: colors.$red;
+}
+
+.text-red-variant {
+  color: colors.$red-variant;
+}
+
+.text-orange {
+  color: colors.$orange-variant;
+}
+
+.text-orange-variant {
+  color: colors.$orange-variant;
+}
+
+.text-yellow {
+  color: colors.$yellow;
+}
+
+.text-yellow-variant {
+  color: colors.$yellow-variant;
+}
+
+.text-green {
+  color: colors.$green;
+}
+
+.text-green-variant {
+  color: colors.$green-variant;
+}
+
+.text-blue {
+  color: colors.$blue;
+}
+
+.text-blue-variant {
+  color: colors.$blue-variant;
+}
+
+.text-primary {
+  color: colors.$blue;
+}
+
+.text-primary-variant {
+  color: colors.$blue-variant;
+}
+
+.text-transparent {
+  color: transparent;
+}

@@ -1,0 +1,64 @@
+@mixin text-xs {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@mixin text-sm {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+@mixin text-base {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+@mixin text-lg {
+  font-size: 18px;
+  line-height: 28px;
+}
+
+@mixin text-xl {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+@mixin text-2xl {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+@mixin text-3xl {
+  font-size: 30px;
+  line-height: 36px;
+}
+
+@mixin text-4xl {
+  font-size: 36px;
+  line-height: 40px;
+}
+
+@mixin text-5xl {
+  font-size: 48px;
+  line-height: 1;
+}
+
+@mixin text-6xl {
+  font-size: 60px;
+  line-height: 1;
+}
+
+@mixin text-7xl {
+  font-size: 72px;
+  line-height: 1;
+}
+
+@mixin text-8xl {
+  font-size: 96px;
+  line-height: 1;
+}
+
+@mixin text-9xl {
+  font-size: 128px;
+  line-height: 1;
+}

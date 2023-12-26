@@ -1,3 +1,6 @@
+import "../styles/fontawesome/css/all.min.css";
+import "../styles/main.scss";
+
 export const metadata = {
   title: "IYKYK Portal",
   description: "If You Know, You Know Programming Language"

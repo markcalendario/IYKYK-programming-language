@@ -1,0 +1,109 @@
+@use "../abstracts/variables-colors" as colors;
+
+.bg-slate {
+  background-color: colors.$slate;
+}
+
+.bg-slate-1 {
+  background-color: colors.$slate-1;
+}
+
+.bg-slate-2 {
+  background-color: colors.$slate-2;
+}
+
+.bg-slate-3 {
+  background-color: colors.$slate-3;
+}
+
+.bg-slate-4 {
+  background-color: colors.$slate-4;
+}
+
+.bg-slate-5 {
+  background-color: colors.$slate-5;
+}
+
+.bg-slate-6 {
+  background-color: colors.$slate-6;
+}
+
+.bg-slate-7 {
+  background-color: colors.$slate-7;
+}
+
+.bg-slate-8 {
+  background-color: colors.$slate-8;
+}
+
+.bg-slate-9 {
+  background-color: colors.$slate-9;
+}
+
+.bg-red {
+  background-color: colors.$red;
+}
+
+.bg-red-variant {
+  background-color: colors.$red-variant;
+}
+
+.bg-orange {
+  background-color: colors.$orange-variant;
+}
+
+.bg-orange-variant {
+  background-color: colors.$orange-variant;
+}
+
+.bg-yellow {
+  background-color: colors.$yellow;
+}
+
+.bg-yellow-variant {
+  background-color: colors.$yellow-variant;
+}
+
+.bg-green {
+  background-color: colors.$green;
+}
+
+.bg-green-variant {
+  background-color: colors.$green-variant;
+}
+
+.bg-blue {
+  background-color: colors.$blue;
+}
+
+.bg-blue-variant {
+  background-color: colors.$blue-variant;
+}
+
+.bg-primary {
+  background-color: colors.$blue;
+}
+
+.bg-primary-variant {
+  background-color: colors.$blue-variant;
+}
+
+.bg-light-background {
+  background-color: colors.$light-background;
+}
+
+.bg-dark-background {
+  background-color: colors.$dark-background;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+.bg-white {
+  background-color: colors.$white;
+}
+
+.bg-black {
+  background-color: colors.$black;
+}

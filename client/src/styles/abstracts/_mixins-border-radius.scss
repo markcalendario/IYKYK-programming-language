@@ -1,0 +1,35 @@
+@mixin rounded-none {
+  border-radius: 0px;
+}
+
+@mixin rounded-sm {
+  border-radius: 0.125rem;
+} /* 2px */
+
+@mixin rounded {
+  border-radius: 0.25rem;
+} /* 4px */
+
+@mixin rounded-md {
+  border-radius: 0.375rem;
+} /* 6px */
+
+@mixin rounded-lg {
+  border-radius: 0.5rem;
+} /* 8px */
+
+@mixin rounded-xl {
+  border-radius: 0.75rem;
+} /* 12px */
+
+@mixin rounded-2xl {
+  border-radius: 1rem;
+} /* 16px */
+
+@mixin rounded-3xl {
+  border-radius: 1.5rem;
+} /* 24px */
+
+@mixin rounded-full {
+  border-radius: 9999px;
+}

@@ -1,0 +1,33 @@
+@use "../abstracts/mixins-shadows" as shadows;
+
+.shadow-sm {
+  @include shadows.shadow-sm;
+}
+
+.shadow {
+  @include shadows.shadow;
+}
+
+.shadow-md {
+  @include shadows.shadow-md;
+}
+
+.shadow-lg {
+  @include shadows.shadow-lg;
+}
+
+.shadow-xl {
+  @include shadows.shadow-xl;
+}
+
+.shadow-2xl {
+  @include shadows.shadow-2xl;
+}
+
+.shadow-inner {
+  @include shadows.shadow-inner;
+}
+
+.shadow-none {
+  @include shadows.shadow-none;
+}

@@ -1,0 +1,53 @@
+@use "../abstracts/mixins-text-sizes" as textSizes;
+
+.text-xs {
+  @include textSizes.text-xs;
+}
+
+.text-sm {
+  @include textSizes.text-sm;
+}
+
+.text-base {
+  @include textSizes.text-base;
+}
+
+.text-lg {
+  @include textSizes.text-lg;
+}
+
+.text-xl {
+  @include textSizes.text-xl;
+}
+
+.text-2xl {
+  @include textSizes.text-2xl;
+}
+
+.text-3xl {
+  @include textSizes.text-3xl;
+}
+
+.text-4xl {
+  @include textSizes.text-4xl;
+}
+
+.text-5xl {
+  @include textSizes.text-5xl;
+}
+
+.text-6xl {
+  @include textSizes.text-6xl;
+}
+
+.text-7xl {
+  @include textSizes.text-7xl;
+}
+
+.text-8xl {
+  @include textSizes.text-8xl;
+}
+
+.text-9xl {
+  @include textSizes.text-9xl;
+}

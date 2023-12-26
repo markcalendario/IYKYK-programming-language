@@ -1,0 +1,138 @@
+@use "../abstracts/mixins-screens" as screens;
+
+/* CONTAINERS */
+
+@mixin container {
+  width: 90%;
+  margin: auto;
+
+  @include screens.tablet {
+    max-width: 1280px;
+  }
+
+  @include screens.desktop {
+    max-width: 1366px;
+  }
+}
+
+/* BREAK POINTS */
+
+@mixin col1 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 8.33%;
+  }
+}
+
+@mixin col2 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 16.66%;
+  }
+}
+
+@mixin col3 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 25%;
+  }
+}
+
+@mixin col4 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 33.33%;
+  }
+}
+
+@mixin col5 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 41.66%;
+  }
+}
+
+@mixin col6 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 50%;
+  }
+}
+
+@mixin col7 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 58.33%;
+  }
+}
+
+@mixin col8 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 66.66%;
+  }
+}
+
+@mixin col9 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 75%;
+  }
+}
+
+@mixin col10 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 83.33%;
+  }
+}
+
+@mixin col11 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 91.66%;
+  }
+}
+
+@mixin col12 {
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  @include screens.tabletAndDesktop {
+    width: 100%;
+  }
+}
