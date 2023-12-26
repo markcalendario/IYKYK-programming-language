@@ -1,0 +1,50 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/layouts/responsive" as responsive;
+@use "../../styles/abstracts/mixins-screens" as screens;
+
+.lexerPopup {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  width: 400px;
+  background-color: colors.$primary;
+  height: 100vh;
+  color: colors.$slate;
+  padding: 10px 20px;
+  animation: lexerPopupAnim 0.5s ease;
+
+  @include screens.mobile {
+    width: 100%;
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    i {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 50%;
+
+      &:hover {
+        background-color: colors.$slate-7;
+      }
+    }
+  }
+}
+
+@keyframes lexerPopupAnim {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
