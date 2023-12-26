@@ -1,0 +1,21 @@
+{
+  "name": "iykyk-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "prod": "cross-env NODE_ENV=production nodemon index.js"
+  },
+  "author": "Mark Kenneth Calendario",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "nodemon": "^3.0.2",
+    "socket.io": "^4.7.2"
+  }
+}
