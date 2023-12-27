@@ -16,12 +16,8 @@ export default function Editor() {
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
 
-  const runLexer = () => {
-    setIsLexerVisible(true);
-  };
-
-  const stopLexer = () => {
-    setIsLexerVisible(false);
+  const toggleLexer = () => {
+    setIsLexerVisible((prev) => !prev);
   };
 
   const handleReceiveConnectSession = ({ success, message, name }) => {
@@ -43,14 +39,14 @@ export default function Editor() {
   return (
     <Fragment>
       <Popup isVisible={isPopupVisible} message={message} />
-      <EditorOptionBar runLexer={runLexer} />
+      <EditorOptionBar toggleLexer={toggleLexer} />
       <CodeEditor />
-      {isLexerVisible ? <LexerPopup stopLexer={stopLexer} /> : null}
+      {isLexerVisible ? <LexerPopup toggleLexer={toggleLexer} /> : null}
     </Fragment>
   );
 }
 
-function EditorOptionBar({ runLexer }) {
+function EditorOptionBar({ toggleLexer }) {
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
   const { sessionId } = useParams();
@@ -69,7 +65,10 @@ function EditorOptionBar({ runLexer }) {
           <a href="/">IYKYK</a>
         </div>
         <div className={styles.right}>
-          <i onClick={runLexer} title="Run" className="fas fa-play fa-fw"></i>
+          <i
+            onClick={toggleLexer}
+            title="Run"
+            className="fas fa-play fa-fw"></i>
           <i
             onClick={handleCopyLink}
             title="Share Link"

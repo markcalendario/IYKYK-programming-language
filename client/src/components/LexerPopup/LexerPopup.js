@@ -4,12 +4,12 @@ import { useState } from "react";
 import Table from "../Table/Table.js";
 import styles from "./LexerPopup.module.scss";
 
-export default function LexerPopup({ stopLexer }) {
+export default function LexerPopup({ toggleLexer }) {
   return (
     <div className={styles.lexerPopup}>
       <div className={styles.top}>
         <h1>Lexer Result</h1>
-        <i onClick={stopLexer} className="fas fa-pause fa-fw" />
+        <i onClick={toggleLexer} className="fas fa-pause fa-fw" />
       </div>
       <Table>
         <thead>
