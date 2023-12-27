@@ -44,12 +44,21 @@ function Editor() {
 
   const handleCodeChange = (text) => {
     setCode(text);
-    socket.emit("writeCode", { sessionId: sessionId, code: text });
   };
 
   const handleReceiveWriteCode = ({ success, message: code }) => {
     if (success) setCode(code);
   };
+
+  const handleUpload = (code) => {
+    setCode(code);
+  };
+
+  useEffect(() => {
+    if (code === null) return;
+
+    socket.emit("writeCode", { sessionId: sessionId, code: code });
+  }, [code]);
 
   useEffect(() => {
     socket.emit("connectSession", sessionId);
@@ -71,7 +80,10 @@ function Editor() {
   return (
     <Fragment>
       <Popup isVisible={isPopupVisible} message={message} />
-      <EditorOptionBar toggleLexer={toggleLexerVisibility} />
+      <EditorOptionBar
+        toggleLexer={toggleLexerVisibility}
+        onUpload={handleUpload}
+      />
       <CodeEditor code={code} onChange={handleCodeChange} />
       <LexerPopup
         isVisible={isLexerVisible}
