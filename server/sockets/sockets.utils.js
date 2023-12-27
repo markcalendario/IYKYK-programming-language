@@ -1,3 +1,7 @@
+import fs from "fs";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
 export function getName() {
   const animals = [
     "Aardvark",
@@ -227,4 +231,14 @@ export function getName() {
   ];
 
   return animals[Math.floor(Math.random() * animals.length)];
+}
+
+export function doesSessionFileExist(sessionId) {
+  return fs.existsSync(
+    path.join(currentDir(import.meta.url), `../sessions/${sessionId}.yk`)
+  );
+}
+
+export function currentDir(meta) {
+  return dirname(fileURLToPath(meta));
 }

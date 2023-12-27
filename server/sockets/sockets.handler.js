@@ -1,13 +1,26 @@
-import { v4 as uuidv4 } from "uuid";
-import { getName } from "./sockets.utils.js";
+import fs from "fs/promises";
+import path from "path";
+import { v4 as uuidv4, validate as uuidValidate } from "uuid";
+import { currentDir, doesSessionFileExist, getName } from "./sockets.utils.js";
 
-export function handleCreateSession(socket) {
+export async function handleCreateSession(socket) {
   const session = uuidv4();
-  socket.emit("createSession", {
-    success: true,
-    message: "Success creating session.",
-    session
-  });
+
+  const sessionsFolder = path.join(currentDir(import.meta.url), "../sessions/");
+
+  try {
+    await fs.appendFile(`${sessionsFolder}/${session}.yk`, "");
+    socket.emit("createSession", {
+      success: true,
+      message: "Session created successfully.",
+      session: session
+    });
+  } catch (error) {
+    socket.emit("createSession", {
+      success: false,
+      message: error.message
+    });
+  }
 }
 
 export function handleConnectSession(socket, sessionId) {
@@ -24,4 +37,28 @@ export function handleAnnounceLeaving(socket) {
     socket.to(room).emit("announceLeaving");
     socket.leave(room);
   }
+}
+
+export function handleValidateSession(socket, sessionId) {
+  if (!uuidValidate(sessionId)) {
+    return socket.emit("validateSession", {
+      success: false,
+      message: "Invalid session ID format.",
+      isSessionValid: false
+    });
+  }
+
+  if (!doesSessionFileExist(sessionId)) {
+    return socket.emit("validateSession", {
+      success: false,
+      message: "Session does not exist.",
+      isSessionValid: false
+    });
+  }
+
+  return socket.emit("validateSession", {
+    success: true,
+    message: "Joining. Please wait.",
+    isSessionValid: true
+  });
 }

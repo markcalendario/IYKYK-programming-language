@@ -2,55 +2,80 @@
 
 import Button from "@/components/Buttons/Buttons.js";
 import Input from "@/components/Inputs/Inputs.js";
+import Popup, { usePopup } from "@/components/Popup/Popup.js";
 import socket from "@/components/Socket/Socket.js";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import styles from "./page.module.scss";
 
 export default function Home() {
   const [sessionId, setSessionId] = useState("");
+  const { isPopupVisible, setIsPopupVisible, message, setMessage } =
+    usePopup(false);
 
   const handleCreateSession = () => {
     socket.emit("createSession");
   };
 
   const handleReceiveCreateSession = ({ success, message, session }) => {
-    window.location.href = "/" + session;
+    setIsPopupVisible(true);
+    setMessage(message);
+
+    if (success) {
+      window.location.href = "/" + session;
+    }
   };
 
   const handleConnectSession = () => {
-    window.location.href = "/" + sessionId;
+    socket.emit("validateSession", sessionId);
   };
 
   const handleSessionIdChange = (evt) => {
     setSessionId(evt.target.value);
   };
 
+  const handleReceiveValidateSession = ({
+    success,
+    message,
+    isSessionValid
+  }) => {
+    setMessage(message);
+    setIsPopupVisible(true);
+
+    if (isSessionValid) {
+      window.location.href = "/" + sessionId;
+    }
+  };
+
   useEffect(() => {
     socket.on("createSession", handleReceiveCreateSession);
-  }, []);
+    socket.on("validateSession", handleReceiveValidateSession);
+  }, [sessionId]);
 
   return (
-    <div className={styles.home}>
-      <div className={styles.container}>
-        <div className={styles.wrapper}>
-          <h1 className={styles.title}>IYKYK</h1>
-          <p className={styles.description}>
-            Welcome to IYKYK Lexical Analyzer
-          </p>
-          <Input
-            placeholder="Session ID"
-            value={sessionId}
-            onChange={handleSessionIdChange}
-          />
-          <Button className={styles.join} onClick={handleConnectSession}>
-            Join Session
-          </Button>
-          <hr />
-          <Button className={styles.createNew} onClick={handleCreateSession}>
-            Create Session
-          </Button>
+    <Fragment>
+      <Popup isVisible={isPopupVisible} message={message} />
+      <div className={styles.home}>
+        <div className={styles.container}>
+          <div className={styles.wrapper}>
+            <h1 className={styles.title}>IYKYK</h1>
+            <p className={styles.description}>
+              Welcome to IYKYK Lexical Analyzer
+            </p>
+            <Input
+              placeholder="Session ID"
+              value={sessionId}
+              onChange={handleSessionIdChange}
+            />
+            <Button className={styles.join} onClick={handleConnectSession}>
+              Join Session
+            </Button>
+            <hr />
+            <Button className={styles.createNew} onClick={handleCreateSession}>
+              Create Session
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 }

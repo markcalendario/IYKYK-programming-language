@@ -1,7 +1,8 @@
 import {
   handleAnnounceLeaving,
   handleConnectSession,
-  handleCreateSession
+  handleCreateSession,
+  handleValidateSession
 } from "./sockets.handler.js";
 
 export default function handleSocket(socket) {
@@ -15,5 +16,9 @@ export default function handleSocket(socket) {
 
   socket.on("disconnecting", () => {
     handleAnnounceLeaving(socket);
+  });
+
+  socket.on("validateSession", (sessionId) => {
+    handleValidateSession(socket, sessionId);
   });
 }
