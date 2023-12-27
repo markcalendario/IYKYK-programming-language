@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from "react";
 import { download } from "../DownloadFile/DownloadFile.js";
 import Popup, { usePopup } from "../Popup/Popup.js";
 import { readFile } from "../ReadFile/ReadFile.js";
+import socket from "../Socket/Socket.js";
 import styles from "./EditorOptionBar.module.scss";
 
 export default function EditorOptionBar({ toggleLexer, onUpload }) {
@@ -18,7 +19,7 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
     setIsCopied(true);
   };
 
-  const handleDownloadFile = async () => {
+  const handleDownloadFile = () => {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/codes/download/${sessionId}`;
     download(url);
   };
@@ -33,6 +34,27 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
     }
     setIsPopupVisible(true);
   };
+
+  const handleDeleteSession = () => {
+    socket.emit("deleteSession", sessionId);
+  };
+
+  const handleReceiveDeleteSession = ({ success, message }) => {
+    setMessage(message);
+    setIsPopupVisible(true);
+
+    if (success) {
+      window.location.reload();
+    }
+  };
+
+  useEffect(() => {
+    socket.on("deleteSession", handleReceiveDeleteSession);
+
+    return () => {
+      socket.off("deleteSession", handleReceiveDeleteSession);
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (isCopied === false) return;
@@ -58,7 +80,11 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
             title="Share Link"
             className={`fas fa-${isCopied ? "check" : "link"} fa-fw`}
           />
-          <i title="Delete Session" className="fas fa-trash fa-fw" />
+          <i
+            onClick={handleDeleteSession}
+            title="Delete Session"
+            className="fas fa-trash fa-fw"
+          />
           <i
             onClick={handleUploadFile}
             title="Upload file"

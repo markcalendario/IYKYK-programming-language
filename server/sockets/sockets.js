@@ -2,6 +2,7 @@ import {
   handleAnnounceLeaving,
   handleConnectSession,
   handleCreateSession,
+  handleDeleteSession,
   handleGetCode,
   handleValidateSession,
   handleWriteCode
@@ -30,5 +31,9 @@ export default function handleSocket(socket) {
 
   socket.on("writeCode", ({ sessionId, code }) => {
     handleWriteCode(socket, sessionId, code);
+  });
+
+  socket.on("deleteSession", (sessionId) => {
+    handleDeleteSession(socket, sessionId);
   });
 }

@@ -1,8 +1,8 @@
-import fs from "fs/promises";
-import path from "path";
 import { v4 as uuidv4, validate as uuidValidate } from "uuid";
+import { io } from "../index.js";
 import {
-  currentDir,
+  createSessionFile,
+  deleteSessionFile,
   doesSessionFileExist,
   getName,
   getSessionCode,
@@ -12,10 +12,8 @@ import {
 export async function handleCreateSession(socket) {
   const session = uuidv4();
 
-  const sessionsFolder = path.join(currentDir(import.meta.url), "../sessions/");
-
   try {
-    await fs.appendFile(`${sessionsFolder}/${session}.yk`, "");
+    createSessionFile(session);
     socket.emit("createSession", {
       success: true,
       message: "Session created successfully.",
@@ -95,5 +93,17 @@ export async function handleWriteCode(socket, sessionId, code) {
       success: false,
       message: error.message
     });
+  }
+}
+
+export async function handleDeleteSession(socket, sessionId) {
+  try {
+    await deleteSessionFile(sessionId, socket);
+    io.in(sessionId).emit("deleteSession", {
+      success: true,
+      message: "This session has been deleted."
+    });
+  } catch (error) {
+    socket.emit("deleteSession", { success: false, message: error.message });
   }
 }

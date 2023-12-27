@@ -261,3 +261,13 @@ export async function writeCode(sessionId, code) {
 
   return await fs.writeFile(ykFile, code, "utf-8");
 }
+
+export async function createSessionFile(sessionId) {
+  const sessionsFolder = path.join(currentDir(import.meta.url), "../sessions/");
+  await fs.appendFile(`${sessionsFolder}/${sessionId}.yk`, "");
+}
+
+export async function deleteSessionFile(sessionId) {
+  const sessionsFolder = path.join(currentDir(import.meta.url), "../sessions/");
+  await fs.unlink(`${sessionsFolder}/${sessionId}.yk`, "");
+}
