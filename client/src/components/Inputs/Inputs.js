@@ -6,7 +6,8 @@ export default function Input({
   name,
   type,
   value,
-  placeholder
+  placeholder,
+  onChange
 }) {
   return (
     <div className={styles.input}>
@@ -17,6 +18,7 @@ export default function Input({
         name={name}
         type={type}
         value={value}
+        onChange={onChange}
       />
     </div>
   );

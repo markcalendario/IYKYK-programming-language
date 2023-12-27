@@ -4,11 +4,14 @@ import CodeEditor from "@/components/CodeEditor/CodeEditor.js";
 import LexerPopup, {
   useLexerPopup
 } from "@/components/LexerPopup/LexerPopup.js";
-import { Fragment } from "react";
+import socket from "@/components/Socket/Socket.js";
+import { useParams } from "next/navigation.js";
+import { Fragment, useEffect } from "react";
 import styles from "./page.module.scss";
 
 export default function Editor() {
   const { isVisible, setIsLexerVisibile } = useLexerPopup(false);
+  const { sessionId } = useParams();
 
   const runLexer = () => {
     setIsLexerVisibile(true);
@@ -17,6 +20,15 @@ export default function Editor() {
   const stopLexer = () => {
     setIsLexerVisibile(false);
   };
+
+  const handleReceiveConnectSession = ({ success, message, name }) => {
+    alert(`${name} joined the coding session.`);
+  };
+
+  useEffect(() => {
+    socket.emit("connectSession", sessionId);
+    socket.on("connectSession", handleReceiveConnectSession);
+  }, []);
 
   return (
     <Fragment>
