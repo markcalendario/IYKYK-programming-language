@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation.js";
 import { Fragment, useEffect, useState } from "react";
+import { download } from "../DownloadFile/DownloadFile.js";
 import styles from "./EditorOptionBar.module.scss";
 
 export default function EditorOptionBar({ toggleLexer }) {
@@ -11,6 +12,11 @@ export default function EditorOptionBar({ toggleLexer }) {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(sessionId);
     setIsCopied(true);
+  };
+
+  const handleDownloadFile = async () => {
+    let url = `${process.env.NEXT_PUBLIC_API_URL}/codes/download/${sessionId}`;
+    download(url);
   };
 
   useEffect(() => {
@@ -40,7 +46,11 @@ export default function EditorOptionBar({ toggleLexer }) {
           />
           <i title="Delete Session" className="fas fa-trash fa-fw" />
           <i title="Upload file" className="fas fa-upload" />
-          <i title="Save file" className="fas fa-save" />
+          <i
+            onClick={handleDownloadFile}
+            title="Save file"
+            className="fas fa-download"
+          />
         </div>
       </nav>
     </Fragment>
