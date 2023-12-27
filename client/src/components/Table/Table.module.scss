@@ -1,0 +1,59 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-screens" as screens;
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead,
+  tbody {
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 7px;
+    border: 1px colors.$slate-5 solid;
+
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    white-space: -webkit-pre-wrap; /* Chrome & Safari */
+    white-space: -pre-wrap; /* Opera 4-6 */
+    white-space: -o-pre-wrap; /* Opera 7 */
+    white-space: pre-wrap; /* CSS3 */
+    word-wrap: break-word; /* Internet Explorer 5.5+ */
+    word-break: break-all;
+    white-space: normal;
+  }
+
+  thead,
+  th {
+    background-color: colors.$slate-7;
+  }
+
+  @include screens.mobile {
+    border-collapse: separate;
+    border-spacing: 0 15px;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: colors.$slate-8;
+        }
+
+        td {
+          display: block;
+
+          &::before {
+            content: attr(data-head) ":";
+            margin-right: 10px;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}

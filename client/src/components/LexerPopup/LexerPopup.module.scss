@@ -1,4 +1,5 @@
 @use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-text-sizes" as textSizes;
 @use "../../styles/layouts/responsive" as responsive;
 @use "../../styles/abstracts/mixins-screens" as screens;
 
@@ -13,6 +14,10 @@
   color: colors.$slate;
   padding: 10px 20px;
   animation: lexerPopupAnim 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow: auto;
 
   @include screens.mobile {
     width: 100%;
@@ -35,6 +40,16 @@
       &:hover {
         background-color: colors.$slate-7;
       }
+    }
+  }
+
+  .error {
+    background-color: colors.$red;
+    padding: 10px;
+    border-radius: 5px;
+
+    p {
+      @include textSizes.text-base;
     }
   }
 }
