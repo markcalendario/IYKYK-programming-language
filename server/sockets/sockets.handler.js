@@ -62,3 +62,18 @@ export function handleValidateSession(socket, sessionId) {
     isSessionValid: true
   });
 }
+
+export async function handleGetCode(socket, sessionId) {
+  const currentPath = currentDir(import.meta.url);
+  const ykFile = path.join(currentPath, `../sessions/${sessionId}.yk`);
+
+  try {
+    socket.emit("getCode", {
+      success: true,
+      message: "Code fetched successfully.",
+      code: await fs.readFile(ykFile, "utf-8")
+    });
+  } catch (error) {
+    socket.emit("getCode", { success: false, message: error.message });
+  }
+}

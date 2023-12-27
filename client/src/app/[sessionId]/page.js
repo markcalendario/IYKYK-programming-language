@@ -13,6 +13,7 @@ import styles from "./page.module.scss";
 
 export default function Editor() {
   const { sessionId } = useParams();
+  const [code, setCode] = useState("");
   const { isLexerVisible, setIsLexerVisible } = useLexerPopup(false);
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
@@ -31,8 +32,16 @@ export default function Editor() {
     setIsPopupVisible(true);
   };
 
+  const handleReceiveGetCode = ({ success, message, code }) => {
+    if (success) {
+      setCode(code);
+    }
+  };
+
   useEffect(() => {
     socket.emit("connectSession", sessionId);
+    socket.emit("getCode", sessionId);
+    socket.on("getCode", handleReceiveGetCode);
     socket.on("connectSession", handleReceiveConnectSession);
     socket.on("announceLeaving", handleAnnounceLeaving);
   }, []);
@@ -41,7 +50,7 @@ export default function Editor() {
     <SessionProtectedPage sessionId={sessionId}>
       <Popup isVisible={isPopupVisible} message={message} />
       <EditorOptionBar toggleLexer={toggleLexer} />
-      <CodeEditor />
+      <CodeEditor code={code} />
       {isLexerVisible ? <LexerPopup toggleLexer={toggleLexer} /> : null}
     </SessionProtectedPage>
   );

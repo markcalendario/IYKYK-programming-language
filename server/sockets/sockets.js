@@ -2,6 +2,7 @@ import {
   handleAnnounceLeaving,
   handleConnectSession,
   handleCreateSession,
+  handleGetCode,
   handleValidateSession
 } from "./sockets.handler.js";
 
@@ -20,5 +21,9 @@ export default function handleSocket(socket) {
 
   socket.on("validateSession", (sessionId) => {
     handleValidateSession(socket, sessionId);
+  });
+
+  socket.on("getCode", (sessionId) => {
+    handleGetCode(socket, sessionId);
   });
 }
