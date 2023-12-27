@@ -3,7 +3,8 @@ import {
   handleConnectSession,
   handleCreateSession,
   handleGetCode,
-  handleValidateSession
+  handleValidateSession,
+  handleWriteCode
 } from "./sockets.handler.js";
 
 export default function handleSocket(socket) {
@@ -25,5 +26,9 @@ export default function handleSocket(socket) {
 
   socket.on("getCode", (sessionId) => {
     handleGetCode(socket, sessionId);
+  });
+
+  socket.on("writeCode", ({ sessionId, code }) => {
+    handleWriteCode(socket, sessionId, code);
   });
 }

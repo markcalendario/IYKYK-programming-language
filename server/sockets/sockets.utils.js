@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -234,11 +234,25 @@ export function getName() {
 }
 
 export function doesSessionFileExist(sessionId) {
-  return fs.existsSync(
+  return fs.access(
     path.join(currentDir(import.meta.url), `../sessions/${sessionId}.yk`)
   );
 }
 
 export function currentDir(meta) {
   return dirname(fileURLToPath(meta));
+}
+
+export async function getSessionCode(sessionId) {
+  const currentPath = currentDir(import.meta.url);
+  const ykFile = path.join(currentPath, `../sessions/${sessionId}.yk`);
+
+  return await fs.readFile(ykFile, "utf-8");
+}
+
+export async function writeCode(sessionId, code) {
+  const currentPath = currentDir(import.meta.url);
+  const ykFile = path.join(currentPath, `../sessions/${sessionId}.yk`);
+
+  return await fs.writeFile(ykFile, code, "utf-8");
 }

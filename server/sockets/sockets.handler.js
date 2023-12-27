@@ -1,7 +1,13 @@
 import fs from "fs/promises";
 import path from "path";
 import { v4 as uuidv4, validate as uuidValidate } from "uuid";
-import { currentDir, doesSessionFileExist, getName } from "./sockets.utils.js";
+import {
+  currentDir,
+  doesSessionFileExist,
+  getName,
+  getSessionCode,
+  writeCode
+} from "./sockets.utils.js";
 
 export async function handleCreateSession(socket) {
   const session = uuidv4();
@@ -64,16 +70,30 @@ export function handleValidateSession(socket, sessionId) {
 }
 
 export async function handleGetCode(socket, sessionId) {
-  const currentPath = currentDir(import.meta.url);
-  const ykFile = path.join(currentPath, `../sessions/${sessionId}.yk`);
-
   try {
     socket.emit("getCode", {
       success: true,
       message: "Code fetched successfully.",
-      code: await fs.readFile(ykFile, "utf-8")
+      code: await getSessionCode(sessionId)
     });
   } catch (error) {
     socket.emit("getCode", { success: false, message: error.message });
+  }
+}
+
+export async function handleWriteCode(socket, sessionId, code) {
+  try {
+    await writeCode(sessionId, code);
+
+    socket.to(sessionId).emit("getCode", {
+      success: true,
+      message: "Code written successfully.",
+      code: await getSessionCode(sessionId)
+    });
+  } catch (error) {
+    socket.emit("getCode", {
+      success: false,
+      message: error.message
+    });
   }
 }
