@@ -7,12 +7,12 @@ import LexerPopup, {
 import Popup, { usePopup } from "@/components/Popup/Popup.js";
 import socket from "@/components/Socket/Socket.js";
 import { useParams } from "next/navigation.js";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import styles from "./page.module.scss";
 
 export default function Editor() {
-  const { isLexerVisible, setIsLexerVisible } = useLexerPopup(false);
   const { sessionId } = useParams();
+  const { isLexerVisible, setIsLexerVisible } = useLexerPopup(false);
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
 
@@ -47,35 +47,42 @@ export default function Editor() {
 }
 
 function EditorOptionBar({ toggleLexer }) {
-  const { isPopupVisible, setIsPopupVisible, message, setMessage } =
-    usePopup(false);
+  const [isCopied, setIsCopied] = useState(false);
   const { sessionId } = useParams();
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(sessionId);
-    setIsPopupVisible(true);
-    setMessage("Session ID has been copied.");
+    setIsCopied(true);
   };
+
+  useEffect(() => {
+    if (isCopied === false) return;
+
+    const copyTimer = setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+
+    return () => {
+      clearTimeout(copyTimer);
+    };
+  }, [isCopied]);
 
   return (
     <Fragment>
-      <Popup isVisible={isPopupVisible} message={message} />
       <nav className={styles.editorOptionBar}>
         <div className={styles.left}>
           <a href="/">IYKYK</a>
         </div>
         <div className={styles.right}>
-          <i
-            onClick={toggleLexer}
-            title="Run"
-            className="fas fa-play fa-fw"></i>
+          <i onClick={toggleLexer} title="Run" className="fas fa-play fa-fw" />
           <i
             onClick={handleCopyLink}
             title="Share Link"
-            className="fas fa-link fa-fw"></i>
-          <i title="Delete Session" className="fas fa-trash fa-fw"></i>
-          <i title="Upload file" className="fas fa-upload"></i>
-          <i title="Save file" className="fas fa-save"></i>
+            className={`fas fa-${isCopied ? "check" : "link"} fa-fw`}
+          />
+          <i title="Delete Session" className="fas fa-trash fa-fw" />
+          <i title="Upload file" className="fas fa-upload" />
+          <i title="Save file" className="fas fa-save" />
         </div>
       </nav>
     </Fragment>
