@@ -5,6 +5,8 @@ import CodeMirror from "@uiw/react-codemirror";
 import styles from "./CodeEditor.module.scss";
 
 export default function CodeEditor({ code, onChange }) {
+  if (code === null) return;
+
   return (
     <div className={styles.codeEditorWrapper}>
       <CodeMirror

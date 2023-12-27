@@ -233,10 +233,15 @@ export function getName() {
   return animals[Math.floor(Math.random() * animals.length)];
 }
 
-export function doesSessionFileExist(sessionId) {
-  return fs.access(
-    path.join(currentDir(import.meta.url), `../sessions/${sessionId}.yk`)
-  );
+export async function doesSessionFileExist(sessionId) {
+  try {
+    await fs.access(
+      path.join(currentDir(import.meta.url), `../sessions/${sessionId}.yk`)
+    );
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function currentDir(meta) {

@@ -4,7 +4,9 @@ import { useState } from "react";
 import Table from "../Table/Table.js";
 import styles from "./LexerPopup.module.scss";
 
-export default function LexerPopup({ toggleLexer }) {
+export default function LexerPopup({ isVisible, toggleLexer }) {
+  if (!isVisible) return;
+
   return (
     <div className={styles.lexerPopup}>
       <div className={styles.top}>
@@ -47,5 +49,9 @@ export default function LexerPopup({ toggleLexer }) {
 export function useLexerPopup(visibility) {
   const [isLexerVisible, setIsLexerVisible] = useState(visibility);
 
-  return { isLexerVisible, setIsLexerVisible };
+  const toggleLexerVisibility = () => {
+    setIsLexerVisible((prev) => !prev);
+  };
+
+  return { isLexerVisible, toggleLexerVisibility };
 }

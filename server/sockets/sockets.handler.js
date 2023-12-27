@@ -45,7 +45,7 @@ export function handleAnnounceLeaving(socket) {
   }
 }
 
-export function handleValidateSession(socket, sessionId) {
+export async function handleValidateSession(socket, sessionId) {
   if (!uuidValidate(sessionId)) {
     return socket.emit("validateSession", {
       success: false,
@@ -54,7 +54,7 @@ export function handleValidateSession(socket, sessionId) {
     });
   }
 
-  if (!doesSessionFileExist(sessionId)) {
+  if (!(await doesSessionFileExist(sessionId))) {
     return socket.emit("validateSession", {
       success: false,
       message: "Session does not exist.",
