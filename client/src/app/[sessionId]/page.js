@@ -5,6 +5,7 @@ import LexerPopup, {
   useLexerPopup
 } from "@/components/LexerPopup/LexerPopup.js";
 import Popup, { usePopup } from "@/components/Popup/Popup.js";
+import SessionProtectedPage from "@/components/RouteProtections/SessionProtectedPage.js";
 import socket from "@/components/Socket/Socket.js";
 import { useParams } from "next/navigation.js";
 import { Fragment, useEffect, useState } from "react";
@@ -37,12 +38,12 @@ export default function Editor() {
   }, []);
 
   return (
-    <Fragment>
+    <SessionProtectedPage sessionId={sessionId}>
       <Popup isVisible={isPopupVisible} message={message} />
       <EditorOptionBar toggleLexer={toggleLexer} />
       <CodeEditor />
       {isLexerVisible ? <LexerPopup toggleLexer={toggleLexer} /> : null}
-    </Fragment>
+    </SessionProtectedPage>
   );
 }
 
