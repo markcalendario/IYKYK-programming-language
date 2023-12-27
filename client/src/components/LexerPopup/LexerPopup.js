@@ -45,11 +45,7 @@ export default function LexerPopup({ stopLexer }) {
 }
 
 export function useLexerPopup(visibility) {
-  const [isVisible, setIsVIsible] = useState(visibility);
+  const [isLexerVisible, setIsLexerVisible] = useState(visibility);
 
-  const setIsLexerVisibile = (visibility) => {
-    setIsVIsible(visibility);
-  };
-
-  return { isVisible, setIsLexerVisibile };
+  return { isLexerVisible, setIsLexerVisible };
 }

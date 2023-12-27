@@ -8,7 +8,7 @@ export default function handleSocket(socket) {
     handleCreateSession(socket);
   });
 
-  socket.on("connectSession", ({ sessionId }) => {
+  socket.on("connectSession", (sessionId) => {
     handleConnectSession(socket, sessionId);
   });
 }

@@ -1,0 +1,41 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-screens" as screens;
+
+.popup {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  position: fixed;
+  bottom: 20px;
+  width: 90%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background-color: colors.$slate;
+  padding: 15px;
+  border-radius: 7px;
+
+  @include screens.tabletAndDesktop {
+    transform: unset;
+    left: unset;
+    right: 20px;
+    width: unset;
+    max-width: 500px;
+  }
+
+  p {
+    color: colors.$primary;
+    font-weight: 700;
+  }
+
+  i {
+    background-color: colors.$primary;
+    width: 35px;
+    height: 35px;
+    color: colors.$slate;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+  }
+}
