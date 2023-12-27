@@ -29,9 +29,15 @@ export default function Editor() {
     setIsPopupVisible(true);
   };
 
+  const handleAnnounceLeaving = () => {
+    setMessage("Someone has left the session.");
+    setIsPopupVisible(true);
+  };
+
   useEffect(() => {
     socket.emit("connectSession", sessionId);
     socket.on("connectSession", handleReceiveConnectSession);
+    socket.on("announceLeaving", handleAnnounceLeaving);
   }, []);
 
   return (
@@ -69,6 +75,8 @@ function EditorOptionBar({ runLexer }) {
             title="Share Link"
             className="fas fa-link fa-fw"></i>
           <i title="Delete Session" className="fas fa-trash fa-fw"></i>
+          <i title="Upload file" className="fas fa-upload"></i>
+          <i title="Save file" className="fas fa-save"></i>
         </div>
       </nav>
     </Fragment>
