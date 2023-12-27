@@ -8,11 +8,10 @@ import { readFile } from "../ReadFile/ReadFile.js";
 import styles from "./EditorOptionBar.module.scss";
 
 export default function EditorOptionBar({ toggleLexer, onUpload }) {
+  const { sessionId } = useParams();
   const [isCopied, setIsCopied] = useState(false);
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
-
-  const { sessionId } = useParams();
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(sessionId);
@@ -28,7 +27,7 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
     try {
       const content = await readFile();
       onUpload(content);
-      setMessage("IYKYK File Uploaded.");
+      setMessage("IYKYK File has been uploaded.");
     } catch (error) {
       setMessage(error.message);
     }
@@ -42,9 +41,7 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
       setIsCopied(false);
     }, 2000);
 
-    return () => {
-      clearTimeout(copyTimer);
-    };
+    return () => clearTimeout(copyTimer);
   }, [isCopied]);
 
   return (

@@ -12,10 +12,8 @@ import { useParams } from "next/navigation.js";
 import { Fragment, useEffect, useState } from "react";
 
 export default function EditorCompiled() {
-  const { sessionId } = useParams();
-
   return (
-    <SessionProtectedPage sessionId={sessionId}>
+    <SessionProtectedPage>
       <Editor />
     </SessionProtectedPage>
   );
@@ -46,12 +44,8 @@ function Editor() {
     setCode(text);
   };
 
-  const handleReceiveWriteCode = ({ success, message: code }) => {
+  const handleReceiveWriteCode = ({ success, message, code }) => {
     if (success) setCode(code);
-  };
-
-  const handleUpload = (code) => {
-    setCode(code);
   };
 
   useEffect(() => {
@@ -82,7 +76,7 @@ function Editor() {
       <Popup isVisible={isPopupVisible} message={message} />
       <EditorOptionBar
         toggleLexer={toggleLexerVisibility}
-        onUpload={handleUpload}
+        onUpload={handleCodeChange}
       />
       <CodeEditor code={code} onChange={handleCodeChange} />
       <LexerPopup
