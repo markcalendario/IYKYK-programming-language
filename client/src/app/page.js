@@ -4,6 +4,7 @@ import Button from "@/components/Buttons/Buttons.js";
 import Input from "@/components/Inputs/Inputs.js";
 import Popup, { usePopup } from "@/components/Popup/Popup.js";
 import socket from "@/components/Socket/Socket.js";
+import Image from "next/image.js";
 import { Fragment, useEffect, useState } from "react";
 import styles from "./page.module.scss";
 
@@ -57,10 +58,14 @@ export default function Home() {
       <div className={styles.home}>
         <div className={styles.container}>
           <div className={styles.wrapper}>
-            <h1 className={styles.title}>IYKYK</h1>
-            <p className={styles.description}>
-              Welcome to IYKYK Lexical Analyzer
-            </p>
+            <div className={styles.imageContainer}>
+              <Image
+                className={styles.logo}
+                src="/assets/images/logo.png"
+                fill
+              />
+            </div>
+            <p>If You Know, You Know Lexical Analyzer</p>
             <Input
               placeholder="Session ID"
               value={sessionId}

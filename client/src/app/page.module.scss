@@ -22,6 +22,18 @@
       gap: 20px;
       max-width: 500px;
 
+      .imageContainer {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin: auto;
+
+        .logo {
+          object-fit: contain;
+          aspect-ratio: 1;
+        }
+      }
+
       .title {
         font-weight: 900;
         color: colors.$primary;
