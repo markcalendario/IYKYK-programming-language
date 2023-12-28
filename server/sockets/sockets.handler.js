@@ -1,5 +1,6 @@
 import { v4 as uuidv4, validate as uuidValidate } from "uuid";
 import { io } from "../index.js";
+import Lexer from "../lexer/lexer.js";
 import {
   createSessionFile,
   deleteSessionFile,
@@ -98,12 +99,30 @@ export async function handleWriteCode(socket, sessionId, code) {
 
 export async function handleDeleteSession(socket, sessionId) {
   try {
-    await deleteSessionFile(sessionId, socket);
+    await deleteSessionFile(sessionId);
     io.in(sessionId).emit("deleteSession", {
       success: true,
       message: "This session has been deleted."
     });
   } catch (error) {
     socket.emit("deleteSession", { success: false, message: error.message });
+  }
+}
+
+export async function handleLex(socket, sessionId) {
+  try {
+    const content = await getSessionCode(sessionId);
+    const lexer = new Lexer(content);
+    const result = lexer.generateToken();
+    socket.emit("lex", {
+      success: true,
+      message: "Token has been generated successfully.",
+      tokens: result
+    });
+  } catch (error) {
+    socket.emit("lex", {
+      success: false,
+      message: error.message
+    });
   }
 }

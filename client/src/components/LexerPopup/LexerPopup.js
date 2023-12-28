@@ -1,11 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import socket from "../Socket/Socket.js";
 import Table from "../Table/Table.js";
 import styles from "./LexerPopup.module.scss";
 
-export default function LexerPopup({ isVisible, toggleLexer }) {
-  if (!isVisible) return;
+export default function LexerPopup({ isVisible, toggleLexer, sessionId }) {
+  const [lexResult, setLexResult] = useState(null);
+
+  const handleLex = () => {
+    socket.emit("lex", sessionId);
+  };
+
+  const handleReceiveLex = useCallback(({ success, message, tokens }) => {
+    setLexResult({ success, message, tokens });
+  });
+
+  useEffect(() => {
+    if (!isVisible) return;
+
+    handleLex();
+
+    socket.on("lex", handleReceiveLex);
+    return () => socket.off("lex", handleReceiveLex);
+  }, [isVisible, sessionId]);
+
+  if (!isVisible || !lexResult) return null;
+
+  const { success, message, tokens } = lexResult;
 
   return (
     <div className={styles.lexerPopup}>
@@ -13,36 +35,36 @@ export default function LexerPopup({ isVisible, toggleLexer }) {
         <h1>Lexer Result</h1>
         <i onClick={toggleLexer} className="fas fa-pause fa-fw" />
       </div>
-      <Table>
-        <thead>
-          <tr>
-            <th>Lexemes</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td data-head="Lexemes">if</td>
-            <td data-head="Description">IF_STATEMENT</td>
-          </tr>
-          <tr>
-            <td data-head="Lexemes">(</td>
-            <td data-head="Description">OPEN_PARENTHESIS</td>
-          </tr>
-          <tr>
-            <td data-head="Lexemes">(</td>
-            <td data-head="Description">OPEN_PARENTHESIS</td>
-          </tr>
-          <tr>
-            <td data-head="Lexemes">(</td>
-            <td data-head="Description">OPEN_PARENTHESIS</td>
-          </tr>
-        </tbody>
-      </Table>
-      <div className={styles.error}>
-        <p>An error occured.</p>
+      <div className={styles[success ? "success" : "error"]}>
+        <p>{message}</p>
       </div>
+      <TokensTable tokens={tokens} />
     </div>
+  );
+}
+
+export function TokensTable({ tokens }) {
+  const displayTokens = () => {
+    return tokens.map(({ token, lexeme }, index) => (
+      <tr key={index}>
+        <td data-head="Lexeme">{lexeme}</td>
+        <td data-head="Token">{token}</td>
+      </tr>
+    ));
+  };
+
+  if (!tokens) return;
+
+  return (
+    <Table>
+      <thead>
+        <tr>
+          <th>Lexemes</th>
+          <th>Tokens</th>
+        </tr>
+      </thead>
+      <tbody>{displayTokens()}</tbody>
+    </Table>
   );
 }
 

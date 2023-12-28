@@ -82,6 +82,7 @@ function Editor() {
       <LexerPopup
         isVisible={isLexerVisible}
         toggleLexer={toggleLexerVisibility}
+        sessionId={sessionId}
       />
     </Fragment>
   );
