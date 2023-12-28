@@ -58,9 +58,7 @@ export default class Lexer {
       this.nextChar();
     }
 
-    if (this.char !== '"') {
-      throw new Error("Unterminated string: " + string);
-    }
+    if (this.char !== '"') this.invalidToken(string);
 
     return string;
   }
@@ -82,11 +80,7 @@ export default class Lexer {
     number += ".";
     this.nextChar();
 
-    if (!this.isNumber(this.char)) {
-      throw new Error(
-        "Invalid token after: " + JSON.stringify(this.token.pop())
-      );
-    }
+    if (!this.isNumber(this.char)) this.invalidToken(this.char);
 
     while (this.isNumber(this.char)) {
       number += this.char;
@@ -117,7 +111,18 @@ export default class Lexer {
       return [TokensList[char], char];
     }
 
-    throw new Error("Unknown token: " + char);
+    this.invalidToken(char);
+  }
+
+  invalidToken(lexeme) {
+    let prevToken = this.token;
+    prevToken = JSON.stringify(prevToken.pop());
+
+    if (!prevToken) {
+      prevToken = "FILE_START";
+    }
+
+    throw new Error("Invalid token after: " + prevToken);
   }
 
   generateToken() {
@@ -159,7 +164,7 @@ export default class Lexer {
 
       // End
       else {
-        throw new Error("Unknown token for lexeme: " + this.char);
+        this.invalidToken(this.char);
       }
     }
     return this.token;
