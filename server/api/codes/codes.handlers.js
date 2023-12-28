@@ -1,15 +1,12 @@
 import path from "path";
-import { currentDir } from "../../sockets/sockets.utils.js";
+import { doesSessionFileExist } from "../../sockets/sockets.utils.js";
 
 export async function handleDownloadSessionCode(req, res) {
-  const curDir = currentDir(import.meta.url);
-  try {
-    const ykFile = path.join(
-      curDir,
-      `../../sessions/${req.params.sessionId}.yk`
-    );
-    await res.download(ykFile);
-  } catch (error) {
-    res.status(500).send({ success: false, message: error.message });
+  if (!(await doesSessionFileExist(req.session.id))) {
+    return res.status(404).send({ success: false, message: "File not found." });
   }
+
+  const curDir = currentDir(import.meta.url);
+  const ykFile = path.join(curDir, `../../sessions/${req.params.sessionId}.yk`);
+  await res.download(ykFile);
 }
