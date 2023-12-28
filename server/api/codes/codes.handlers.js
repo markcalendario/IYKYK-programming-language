@@ -1,5 +1,8 @@
 import path from "path";
-import { doesSessionFileExist } from "../../sockets/sockets.utils.js";
+import {
+  currentDir,
+  doesSessionFileExist
+} from "../../sockets/sockets.utils.js";
 
 export async function handleDownloadSessionCode(req, res) {
   if (!(await doesSessionFileExist(req.params.sessionId))) {
