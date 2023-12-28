@@ -1,8 +1,8 @@
-import { TokensList, operators } from "./tokens.js";
+import { TokensList } from "./tokens.js";
 
 export default class Lexer {
   constructor(code) {
-    this.code = code;
+    this.code = code.trimEnd();
     this.pos = 0;
     this.char = code[this.pos];
     this.token = [];
@@ -18,6 +18,11 @@ export default class Lexer {
     return this.char;
   }
 
+  peekNextChar() {
+    let t = 5;
+    return this.code[this.pos + 1];
+  }
+
   skipWhitespace() {
     while (/^\s*$/.test(this.char)) {
       this.nextChar();
@@ -25,119 +30,136 @@ export default class Lexer {
   }
 
   isValidIdentifierStart(char) {
-    return typeof char === "string" && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(char);
+    const regex = /^[a-zA-Z_]+$/;
+    return typeof char === "string" && regex.test(char);
   }
 
-  isAlphaNumeric(char) {
-    return typeof char === "string" && /^[a-zA-Z0-9]+$/.test(char);
+  isValidIdentifier(char) {
+    const regex = /^[a-zA-Z0-9_]+$/;
+    return typeof char === "string" && regex.test(char);
   }
 
-  isNumeric(char) {
-    return typeof char === "string" && /^\d+$/.test(char);
+  getIdentifier() {
+    let identifier = "";
+
+    while (this.isValidIdentifier(this.char)) {
+      identifier += this.char;
+      this.nextChar();
+    }
+
+    return identifier;
   }
 
-  isValidFloatingPointPart(char) {
-    return typeof char === "string" && /[0-9.eE+-]/.test(char);
+  getString() {
+    let string = "";
+
+    while (this.char !== '"' && typeof this.char !== "undefined") {
+      string += this.char;
+      this.nextChar();
+    }
+
+    if (this.char !== '"') {
+      throw new Error("Unterminated string: " + string);
+    }
+
+    return string;
+  }
+
+  isNumber(char) {
+    const regex = /^[0-9]+$/;
+    return typeof char === "string" && regex.test(char);
+  }
+
+  getNumber() {
+    let number = "";
+
+    while (this.isNumber(this.char)) {
+      number += this.char;
+      this.nextChar();
+    }
+
+    if (this.char !== ".") return number;
+    number += ".";
+    this.nextChar();
+
+    if (!this.isNumber(this.char)) {
+      throw new Error(
+        "Invalid token after: " + JSON.stringify(this.token.pop())
+      );
+    }
+
+    while (this.isNumber(this.char)) {
+      number += this.char;
+      this.nextChar();
+    }
+
+    return number;
+  }
+
+  isSymbol(char) {
+    const regex = /^[+\-*/%=<>&|^~!.,;:{}\[\]()?'":`#]$/;
+    return typeof char === "string" && regex.test(char);
+  }
+
+  tokenizeSymbol() {
+    const char = this.char;
+
+    const multiCharSymbols = Object.keys(TokensList).filter(
+      (key) => key.length === 2
+    );
+
+    const doubleChar = char + this.peekNextChar();
+
+    if (multiCharSymbols.includes(doubleChar)) {
+      this.nextChar();
+      return [TokensList[doubleChar], doubleChar];
+    } else if (TokensList[char]) {
+      return [TokensList[char], char];
+    }
+
+    throw new Error("Unknown token: " + char);
   }
 
   generateToken() {
     while (typeof this.char === "string") {
       this.skipWhitespace();
 
-      if (this.char === "(") {
-        this.pushToken(TokensList.OpenParenthesis, this.char);
-        this.nextChar();
-      } else if (this.char === ")") {
-        this.pushToken(TokensList.OpenParenthesis, this.char);
-        this.nextChar();
-      } else if (operators.includes(this.char)) {
-        this.pushToken(TokensList.Operator, this.char);
-        this.nextChar();
-      } else if (this.char === "=") {
-        this.pushToken(TokensList.Equal, this.char);
-        this.nextChar();
-      } else if (this.char === ";") {
-        this.pushToken(TokensList.Semicolon, this.char);
-        this.nextChar();
-      } else if (this.char === "{") {
-        this.pushToken(TokensList.OpenBrace, this.char);
-        this.nextChar();
-      } else if (this.char === "}") {
-        this.pushToken(TokensList.CloseBrace, this.char);
-        this.nextChar();
-      } else if (this.char === "[") {
-        this.pushToken(TokensList.OpenBracket, this.char);
-        this.nextChar();
-      } else if (this.char === "]") {
-        this.pushToken(TokensList.CloseBracket, this.char);
-        this.nextChar();
-      } else if (this.char === "!") {
-        this.pushToken(TokensList.LogicalNot, this.char);
-        this.nextChar();
-      } else if (this.char === "&" && this.nextChar() === "&") {
-        this.pushToken(TokensList.LogicalAnd, "&&");
-        this.nextChar();
-      } else if (this.char === "|" && this.nextChar() === "|") {
-        this.pushToken(TokensList.LogicalAnd, "||");
-        this.nextChar();
+      // Identifiers, Reserved Words, Keywords
+      if (this.isValidIdentifierStart(this.char)) {
+        const identifier = this.getIdentifier();
+        const tokenType = TokensList[identifier] || TokensList.Identifier;
+        this.pushToken(tokenType, identifier);
       }
 
-      // Multi-character
+      // String
+      else if (this.char === '"') {
+        this.pushToken(TokensList.DoubleQuote, this.char);
+        this.nextChar();
 
-      // Identifiers, Keywords, Reserved Words
-      else if (this.isValidIdentifierStart(this.char)) {
-        let identifier = "";
-
-        while (this.isAlphaNumeric(this.char)) {
-          identifier += this.char;
-          this.nextChar();
-        }
-
-        if (identifier === "flex") {
-          this.pushToken(TokensList.Flex, identifier);
-        } else if (identifier === "lit") {
-          this.pushToken(TokensList.Lit, identifier);
-        } else if (identifier === "yeet") {
-          this.pushToken(TokensList.ConditionalYeet, identifier);
-        } else if (identifier === "yikes") {
-          this.pushToken(TokensList.ConditionalYeet, identifier);
-        } else {
-          this.pushToken(TokensList.Identifier, identifier);
-        }
+        const string = this.getString();
+        this.pushToken(TokensList.String, string);
+        this.pushToken(TokensList.DoubleQuote, this.char);
+        this.nextChar();
       }
 
       // Numbers
-      else if (this.isNumeric(this.char)) {
-        let numbers = "";
+      else if (this.isNumber(this.char)) {
+        const number = this.getNumber();
 
-        while (this.isValidFloatingPointPart(this.char)) {
-          numbers += this.char;
-          this.nextChar();
-        }
-
-        this.pushToken(TokensList.Number, numbers);
+        if (number.includes(".")) this.pushToken(TokensList.Float, number);
+        else this.pushToken(TokensList.Number, number);
       }
 
-      // Strings
-      else if (this.char === '"') {
-        this.pushToken(TokensList.DoubleQuote, this.char);
-        this.nextChar(); // avoid leading quotation mark
-        let string = "";
+      // Symbols
+      else if (this.isSymbol(this.char)) {
+        const [lexeme, token] = this.tokenizeSymbol();
+        this.pushToken(lexeme, token);
+        this.nextChar();
+      }
 
-        while (typeof this.char === "string" && this.char !== '"') {
-          string += this.char;
-          this.nextChar();
-        }
-
-        if (this.char === '"') {
-          this.pushToken(TokensList.String, string);
-          this.pushToken(TokensList.DoubleQuote, this.char);
-          this.nextChar(); // move past the closing quotation mark
-        } else {
-          throw new Error("Unterminated string: " + string);
-        }
-      } else {
-        throw new Error("Unrecognized token: " + this.char);
+      // End
+      else {
+        throw new Error("Unknown token for lexeme: " + this.char);
       }
     }
     return this.token;
