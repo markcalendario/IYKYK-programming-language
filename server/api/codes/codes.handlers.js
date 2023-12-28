@@ -2,7 +2,7 @@ import path from "path";
 import { doesSessionFileExist } from "../../sockets/sockets.utils.js";
 
 export async function handleDownloadSessionCode(req, res) {
-  if (!(await doesSessionFileExist(req.session.id))) {
+  if (!(await doesSessionFileExist(req.params.sessionId))) {
     return res.status(404).send({ success: false, message: "File not found." });
   }
 
