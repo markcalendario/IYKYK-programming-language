@@ -91,7 +91,7 @@ export default class Lexer {
   }
 
   isSymbol(char) {
-    const regex = /^[+\-*/%=<>&|^~!.,;:{}\[\]()?'":`#]$/;
+    const regex = /^[+\-*/%=<>&|^~!.,;:{}\[\]()?'":`#\\$@]$/;
     return typeof char === "string" && regex.test(char);
   }
 
@@ -122,7 +122,36 @@ export default class Lexer {
       prevToken = "FILE_START";
     }
 
-    throw new Error("Invalid token after: " + prevToken);
+    throw new Error("Invalid token: " + prevToken);
+  }
+
+  getSingleLineCommentContent() {
+    let commentContent = "";
+
+    while (this.char !== "\n" && typeof this.char === "string") {
+      commentContent += this.char;
+      this.nextChar();
+    }
+
+    return commentContent;
+  }
+
+  getMultiLineCommentContent() {
+    let commentContent = "";
+
+    while (
+      this.char + this.peekNextChar() !== "*/" &&
+      typeof this.char === "string"
+    ) {
+      commentContent += this.char;
+      this.nextChar();
+    }
+
+    if (this.char + this.peekNextChar() !== "*/") {
+      return this.invalidToken(this.char);
+    }
+
+    return commentContent;
   }
 
   generateToken() {
@@ -153,6 +182,27 @@ export default class Lexer {
 
         if (number.includes(".")) this.pushToken(TokensList.Float, number);
         else this.pushToken(TokensList.Number, number);
+      }
+
+      // Comments
+      else if (this.char === "/" && this.peekNextChar() === "/") {
+        this.nextChar();
+        this.nextChar();
+        this.pushToken(TokensList.Comment_SingleLine, "//");
+        const commentContent = this.getSingleLineCommentContent();
+        this.pushToken(TokensList.Comment_Single_Content, commentContent);
+      }
+
+      // Multi-Line Comments
+      else if (this.char === "/" && this.peekNextChar() === "*") {
+        this.nextChar();
+        this.nextChar();
+        this.pushToken(TokensList.Comment_MultiLine_Start, "/*");
+        const commentContent = this.getMultiLineCommentContent();
+        this.pushToken(TokensList.Comment_Multi_Content, commentContent);
+        this.pushToken(TokensList.Comment_MultiLine_End, "*/");
+        this.nextChar();
+        this.nextChar();
       }
 
       // Symbols
