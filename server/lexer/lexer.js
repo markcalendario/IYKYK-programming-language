@@ -167,12 +167,12 @@ export default class Lexer {
 
       // String
       else if (this.char === '"') {
-        this.pushToken(TokensList.DoubleQuote, this.char);
+        this.pushToken(TokensList['"'], this.char);
         this.nextChar();
 
         const string = this.getString();
         this.pushToken(TokensList.String, string);
-        this.pushToken(TokensList.DoubleQuote, this.char);
+        this.pushToken(TokensList['"'], this.char);
         this.nextChar();
       }
 
