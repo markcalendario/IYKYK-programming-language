@@ -270,5 +270,6 @@ export const TokensList = {
   sandbox: "HTML_Attribute_Sandbox",
   allow: "HTML_Attribute_Allow",
   valueasdate: "HTML_Attribute_ValueAsDate",
-  valueasnumber: "HTML_Attribute_ValueAsNumber"
+  valueasnumber: "HTML_Attribute_ValueAsNumber",
+  content: "HTML_Attribute_Content"
 };
