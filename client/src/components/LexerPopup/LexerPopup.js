@@ -56,7 +56,7 @@ export function TokensTable({ tokens }) {
   if (!tokens) return;
 
   return (
-    <Table>
+    <Table className={styles.tokensTable}>
       <thead>
         <tr>
           <th>Lexemes</th>

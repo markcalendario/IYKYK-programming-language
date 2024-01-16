@@ -8,7 +8,7 @@
   right: 0;
   top: 0;
   z-index: 1;
-  width: 400px;
+  width: 550px;
   background-color: colors.$primary;
   height: 100vh;
   color: colors.$slate;
@@ -69,5 +69,16 @@
 
   to {
     transform: translateX(0);
+  }
+}
+
+.tokensTable {
+  @include screens.tabletAndDesktop {
+    tr {
+      th:first-child,
+      td:first-child {
+        width: 40%;
+      }
+    }
   }
 }
