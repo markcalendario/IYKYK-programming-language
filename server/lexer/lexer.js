@@ -188,7 +188,7 @@ export default class Lexer {
       else if (this.char === "/" && this.peekNextChar() === "/") {
         this.nextChar();
         this.nextChar();
-        this.pushToken(TokensList.Comment_SingleLine, "//");
+        this.pushToken(TokensList["//"], "//");
         const commentContent = this.getSingleLineCommentContent();
         this.pushToken(TokensList.Comment_Single_Content, commentContent);
       }
@@ -197,10 +197,10 @@ export default class Lexer {
       else if (this.char === "/" && this.peekNextChar() === "*") {
         this.nextChar();
         this.nextChar();
-        this.pushToken(TokensList.Comment_MultiLine_Start, "/*");
+        this.pushToken(TokensList["/*"], "/*");
         const commentContent = this.getMultiLineCommentContent();
         this.pushToken(TokensList.Comment_Multi_Content, commentContent);
-        this.pushToken(TokensList.Comment_MultiLine_End, "*/");
+        this.pushToken(TokensList["*/"], "*/");
         this.nextChar();
         this.nextChar();
       }

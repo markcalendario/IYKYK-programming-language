@@ -3,12 +3,13 @@ export const TokensList = {
   Number: "Number",
   Float: "Float",
   String: "String",
+  Character: "Character",
 
-  Comment_SingleLine: "Comment_Single",
+  "//": "Comment_Single",
   Comment_Single_Content: "Comment_Single_Content",
 
-  Comment_MultiLine_Start: "Comment_Multiline_Start",
-  Comment_MultiLine_End: "Comment_Multiline_End",
+  "/*": "Comment_Multiline_Start",
+  "*/": "Comment_Multiline_End",
   Comment_Multi_Content: "Comment_Multi_Content",
 
   "+": "Arithmetic_Addition",
@@ -41,41 +42,33 @@ export const TokensList = {
   ">>": "StepWiseIncrement",
   "<<": "StepWiseDecrement",
 
-  "?": "Ternary",
-  ":": "Colon",
+  "?": "SpecialKey_QuestionMark",
+  ":": "Delimeter_Colon",
 
-  "#": "UndefinedSafety",
+  "[": "Delimeter_OpenBracket",
+  "]": "Delimeter_CloseBracket",
 
-  "[": "OpenBracket",
-  "]": "CloseBracket",
+  "(": "Delimeter_OpenParenthesis",
+  ")": "Delimeter_CloseParenthesis",
 
-  "(": "OpenParenthesis",
-  ")": "CloseParenthesis",
+  "{": "Delimeter_OpenBrace",
+  "}": "Delimeter_CloseBrace",
 
-  "{": "OpenBrace",
-  "}": "CloseBrace",
+  ",": "Delimeter_Comma",
+  ";": "Delimeter_Semicolon",
 
-  ",": "Comma",
+  "#": "SpecialKey_UndefinedSafety",
+  "'": "SpecialKey_SingleQuote",
+  '"': "SpecialKey_DoubleQuote",
+  "`": "SpecialKey_Backtick",
+  ".": "SpecialKey_Dot",
+  $: "SpecialKey_Dollar",
+  "@": "SpecialKey_At",
 
-  ";": "Semicolon",
-
-  ":": "Colon",
-
-  "?": "QuestionMark",
-
-  "'": "SingleQuote",
-  '"': "DoubleQuote",
-
-  "`": "Backtick",
-
-  ".": "Dot",
-
-  "\\": "Escape",
-
-  $: "Dollar",
-
-  "@": "At",
-
+  "\\": "Escape_Sequence",
+  "\\n": "Escape_NewLine",
+  '\\"': "Escape_DoubleQuote",
+  "\\'": "Escape_SingleQuote",
   // Variable/Constants
 
   lit: "Variable_Lit",
