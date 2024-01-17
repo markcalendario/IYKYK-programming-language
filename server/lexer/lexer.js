@@ -1,4 +1,4 @@
-import { TokensList } from "./tokens.js";
+import { TokensList, reservedWords } from "./tokens.js";
 
 export default class Lexer {
   constructor(code) {
@@ -161,8 +161,12 @@ export default class Lexer {
       // Identifiers, Reserved Words, Keywords
       if (this.isValidIdentifierStart(this.char)) {
         const identifier = this.getIdentifier();
-        const tokenType = TokensList[identifier] || TokensList.Identifier;
-        this.pushToken(tokenType, identifier);
+
+        if (reservedWords.includes(identifier) || !TokensList[identifier]) {
+          this.pushToken(TokensList.Identifier, identifier);
+        } else {
+          this.pushToken(TokensList[identifier], identifier);
+        }
       }
 
       // String

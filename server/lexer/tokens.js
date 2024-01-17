@@ -1,3 +1,13 @@
+export const reservedWords = [
+  "Identifier",
+  "Number",
+  "Float",
+  "String",
+  "Character",
+  "Comment_Single_Content",
+  "Comment_Multi_Content"
+];
+
 export const TokensList = {
   Identifier: "Identifier",
   Number: "Number",
@@ -43,19 +53,19 @@ export const TokensList = {
   "<<": "StepWiseDecrement",
 
   "?": "SpecialKey_QuestionMark",
-  ":": "Delimeter_Colon",
+  ":": "Delimiter_Colon",
 
-  "[": "Delimeter_OpenBracket",
-  "]": "Delimeter_CloseBracket",
+  "[": "Delimiter_OpenBracket",
+  "]": "Delimiter_CloseBracket",
 
-  "(": "Delimeter_OpenParenthesis",
-  ")": "Delimeter_CloseParenthesis",
+  "(": "Delimiter_OpenParenthesis",
+  ")": "Delimiter_CloseParenthesis",
 
-  "{": "Delimeter_OpenBrace",
-  "}": "Delimeter_CloseBrace",
+  "{": "Delimiter_OpenBrace",
+  "}": "Delimiter_CloseBrace",
 
-  ",": "Delimeter_Comma",
-  ";": "Delimeter_Semicolon",
+  ",": "Delimiter_Comma",
+  ";": "Delimiter_Semicolon",
 
   "#": "SpecialKey_UndefinedSafety",
   "'": "SpecialKey_SingleQuote",
