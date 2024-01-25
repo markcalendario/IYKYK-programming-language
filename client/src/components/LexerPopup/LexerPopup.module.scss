@@ -57,8 +57,13 @@
 .tokensTable {
   @include screens.tabletAndDesktop {
     tr {
-      th:first-child,
-      td:first-child {
+      th:nth-child(1),
+      td:nth-child(1) {
+        width: 15%;
+      }
+
+      th:nth-child(2),
+      td:nth-child(2) {
         width: 40%;
       }
     }

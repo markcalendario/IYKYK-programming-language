@@ -6,10 +6,15 @@ export default class Lexer {
     this.pos = 0;
     this.char = code[this.pos];
     this.token = [];
+    this.currentLine = 1;
   }
 
   pushToken(tokenType, value) {
-    this.token.push({ token: tokenType, lexeme: value });
+    this.token.push({
+      line: this.currentLine,
+      token: tokenType,
+      lexeme: value
+    });
   }
 
   nextChar() {
@@ -25,6 +30,10 @@ export default class Lexer {
 
   skipWhitespace() {
     while (/^\s*$/.test(this.char)) {
+      if (/\n/.test(this.char)) {
+        this.currentLine++;
+      }
+
       this.nextChar();
     }
   }

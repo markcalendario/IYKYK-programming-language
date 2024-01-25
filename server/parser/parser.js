@@ -43,9 +43,14 @@ export default class Parser {
     return dequeuedTokens.pop().lexeme;
   }
 
+  getCurrentLineOfCurrentToken() {
+    const tokens = [...this.tokens];
+    return tokens.shift().line;
+  }
+
   throwExpectation(expectedToken) {
     throw new Error(
-      `Expected token "${expectedToken}" after "${this.peekPrevLexeme()}" (${this.peekPrevToken()}) but encountered "${this.peekCurrentLexeme()}" (${this.peekCurrentToken()}).`
+      `Expected token "${expectedToken}" after "${this.peekPrevLexeme()}" (${this.peekPrevToken()}) but encountered "${this.peekCurrentLexeme()}" (${this.peekCurrentToken()}) at line ${this.getCurrentLineOfCurrentToken()}.`
     );
   }
 

@@ -44,8 +44,9 @@ export default function LexerPopup({ isVisible, toggleLexer, sessionId }) {
 
 export function TokensTable({ tokens }) {
   const displayTokens = () => {
-    return tokens.map(({ token, lexeme }, index) => (
+    return tokens.map(({ line, token, lexeme }, index) => (
       <tr key={index}>
+        <td data-head="Line">{line}</td>
         <td data-head="Lexeme">{lexeme}</td>
         <td data-head="Token">{token}</td>
       </tr>
@@ -58,6 +59,7 @@ export function TokensTable({ tokens }) {
     <Table className={styles.tokensTable}>
       <thead>
         <tr>
+          <th>Line</th>
           <th>Lexemes</th>
           <th>Tokens</th>
         </tr>
