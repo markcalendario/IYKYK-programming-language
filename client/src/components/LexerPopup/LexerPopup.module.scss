@@ -42,24 +42,6 @@
       }
     }
   }
-
-  .error {
-    background-color: colors.$red;
-  }
-
-  .success {
-    background-color: colors.$green;
-  }
-
-  .error,
-  .success {
-    padding: 10px;
-    border-radius: 5px;
-
-    p {
-      @include textSizes.text-base;
-    }
-  }
 }
 
 @keyframes lexerPopupAnim {

@@ -1,0 +1,21 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-text-sizes" as textSizes;
+
+.highlight {
+  padding: 10px;
+  color: colors.$slate;
+
+  &.error {
+    border-left: 6px colors.$red solid;
+    background-color: rgba($color: colors.$red-variant, $alpha: 0.7);
+  }
+
+  &.success {
+    border-left: 6px colors.$green solid;
+    background-color: rgba($color: colors.$green-variant, $alpha: 0.7);
+  }
+
+  p {
+    @include textSizes.text-base;
+  }
+}

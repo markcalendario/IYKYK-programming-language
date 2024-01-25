@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Highlight from "../Highlight/Highlight.js";
+import IconButton from "../IconButtons/IconButtons.js";
 import socket from "../Socket/Socket.js";
 import Table from "../Table/Table.js";
 import styles from "./LexerPopup.module.scss";
@@ -33,11 +35,9 @@ export default function LexerPopup({ isVisible, toggleLexer, sessionId }) {
     <div className={styles.lexerPopup}>
       <div className={styles.top}>
         <h1>Lexer Result</h1>
-        <i onClick={toggleLexer} className="fas fa-pause fa-fw" />
+        <IconButton onClick={toggleLexer} icon="fa-pause" />
       </div>
-      <div className={styles[success ? "success" : "error"]}>
-        <p>{message}</p>
-      </div>
+      <Highlight type={success ? "success" : "error"} message={message} />
       <TokensTable tokens={tokens} />
     </div>
   );

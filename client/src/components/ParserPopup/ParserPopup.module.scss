@@ -1,0 +1,42 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-screens" as screens;
+
+.backdrop {
+  position: fixed;
+  background-color: rgba($color: colors.$primary-variant, $alpha: 0.7);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+
+  .parserPopup {
+    position: fixed;
+    max-width: 700px;
+    width: 95%;
+    background-color: colors.$primary;
+    padding: 15px;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 3px;
+    max-height: 95vh;
+    overflow: auto;
+
+    .container {
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .heading {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          color: colors.$slate;
+        }
+      }
+    }
+  }
+}

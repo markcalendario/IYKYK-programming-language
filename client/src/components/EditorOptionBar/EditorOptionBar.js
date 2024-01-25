@@ -3,14 +3,19 @@
 import { useParams } from "next/navigation.js";
 import { Fragment, useEffect, useState } from "react";
 import { download } from "../DownloadFile/DownloadFile.js";
+import IconButton from "../IconButtons/IconButtons.js";
+import LexerPopup, { useLexerPopup } from "../LexerPopup/LexerPopup.js";
+import ParserPopup, { useParserPopup } from "../ParserPopup/ParserPopup.js";
 import Popup, { usePopup } from "../Popup/Popup.js";
 import { readFile } from "../ReadFile/ReadFile.js";
 import socket from "../Socket/Socket.js";
 import styles from "./EditorOptionBar.module.scss";
 
-export default function EditorOptionBar({ toggleLexer, onUpload }) {
+export default function EditorOptionBar({ onUpload }) {
   const { sessionId } = useParams();
   const [isCopied, setIsCopied] = useState(false);
+  const { isLexerVisible, toggleLexerVisibility } = useLexerPopup(false);
+  const { isParserVisible, toggleParserVisibility } = useParserPopup(false);
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
 
@@ -48,6 +53,14 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
     }
   };
 
+  const toggleLexer = () => {
+    toggleLexerVisibility((prev) => !prev);
+  };
+
+  const toggleParser = () => {
+    toggleParserVisibility((prev) => !prev);
+  };
+
   useEffect(() => {
     socket.on("deleteSession", handleReceiveDeleteSession);
 
@@ -68,32 +81,51 @@ export default function EditorOptionBar({ toggleLexer, onUpload }) {
 
   return (
     <Fragment>
+      <LexerPopup
+        isVisible={isLexerVisible}
+        toggleLexer={toggleLexer}
+        sessionId={sessionId}
+      />
+      <ParserPopup
+        isVisible={isParserVisible}
+        toggleParser={toggleParser}
+        sessionId={sessionId}
+      />
       <Popup isVisible={isPopupVisible} message={message} />
       <nav className={styles.editorOptionBar}>
         <div className={styles.left}>
           <a href="/">IYKYK</a>
         </div>
         <div className={styles.right}>
-          <i onClick={toggleLexer} title="Run" className="fas fa-play fa-fw" />
-          <i
+          <IconButton
+            onClick={toggleParser}
+            title="Analyze Syntax"
+            icon="fa-bolt"
+          />
+          <IconButton
+            onClick={toggleLexer}
+            title="Analyze Lexemes"
+            icon="fas fa-play fa-fw"
+          />
+          <IconButton
             onClick={handleCopyLink}
             title="Share Link"
-            className={`fas fa-${isCopied ? "check" : "link"} fa-fw`}
+            icon={`fas fa-${isCopied ? "check" : "link"} fa-fw`}
           />
-          <i
+          <IconButton
             onClick={handleDeleteSession}
             title="Delete Session"
-            className="fas fa-trash fa-fw"
+            icon="fas fa-trash fa-fw"
           />
-          <i
+          <IconButton
             onClick={handleUploadFile}
             title="Upload file"
-            className="fas fa-upload"
+            icon="fas fa-upload"
           />
-          <i
+          <IconButton
             onClick={handleDownloadFile}
             title="Save file"
-            className="fas fa-download"
+            icon="fas fa-download"
           />
         </div>
       </nav>

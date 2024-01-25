@@ -2,9 +2,6 @@
 
 import CodeEditor from "@/components/CodeEditor/CodeEditor.js";
 import EditorOptionBar from "@/components/EditorOptionBar/EditorOptionBar.js";
-import LexerPopup, {
-  useLexerPopup
-} from "@/components/LexerPopup/LexerPopup.js";
 import Popup, { usePopup } from "@/components/Popup/Popup.js";
 import SessionProtectedPage from "@/components/RouteProtections/SessionProtectedPage.js";
 import socket from "@/components/Socket/Socket.js";
@@ -22,7 +19,7 @@ export default function EditorCompiled() {
 function Editor() {
   const { sessionId } = useParams();
   const [code, setCode] = useState(null);
-  const { isLexerVisible, toggleLexerVisibility } = useLexerPopup(false);
+
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
 
@@ -70,16 +67,8 @@ function Editor() {
   return (
     <Fragment>
       <Popup isVisible={isPopupVisible} message={message} />
-      <EditorOptionBar
-        toggleLexer={toggleLexerVisibility}
-        onUpload={handleCodeChange}
-      />
+      <EditorOptionBar onUpload={handleCodeChange} />
       <CodeEditor code={code} onChange={handleCodeChange} />
-      <LexerPopup
-        isVisible={isLexerVisible}
-        toggleLexer={toggleLexerVisibility}
-        sessionId={sessionId}
-      />
     </Fragment>
   );
 }
