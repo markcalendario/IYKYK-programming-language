@@ -1,6 +1,7 @@
 import { v4 as uuidv4, validate as uuidValidate } from "uuid";
 import { io } from "../index.js";
 import Lexer from "../lexer/lexer.js";
+import Parser from "../parser/parser.js";
 import {
   createSessionFile,
   deleteSessionFile,
@@ -121,6 +122,26 @@ export async function handleLex(socket, sessionId) {
     });
   } catch (error) {
     socket.emit("lex", {
+      success: false,
+      message: error.message
+    });
+  }
+}
+
+export async function handleParse(socket, sessionId) {
+  try {
+    const content = await getSessionCode(sessionId);
+    const lexer = new Lexer(content);
+    const tokens = lexer.generateToken();
+    const parser = new Parser(tokens);
+    const result = parser.analyzeSyntax(tokens);
+
+    socket.emit("parse", {
+      success: true,
+      message: "Token has been generated successfully."
+    });
+  } catch (error) {
+    socket.emit("parse", {
       success: false,
       message: error.message
     });

@@ -5,12 +5,14 @@ export const reservedWords = [
   "String",
   "Character",
   "Comment_Single_Content",
-  "Comment_Multi_Content"
+  "Comment_Multi_Content",
+  "Tea"
 ];
 
 export const TokensList = {
   Identifier: "Identifier",
   Number: "Number",
+  Boolean: "Boolean",
   Float: "Float",
   String: "String",
   Character: "Character",

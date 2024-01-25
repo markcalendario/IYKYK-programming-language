@@ -5,6 +5,7 @@ import {
   handleDeleteSession,
   handleGetCode,
   handleLex,
+  handleParse,
   handleValidateSession,
   handleWriteCode
 } from "./sockets.handler.js";
@@ -40,5 +41,9 @@ export default function handleSocket(socket) {
 
   socket.on("lex", (sessionId) => {
     handleLex(socket, sessionId);
+  });
+
+  socket.on("parse", (sessionId) => {
+    handleParse(socket, sessionId);
   });
 }

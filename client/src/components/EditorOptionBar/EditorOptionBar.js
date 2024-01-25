@@ -100,7 +100,7 @@ export default function EditorOptionBar({ onUpload }) {
           <IconButton
             onClick={toggleParser}
             title="Analyze Syntax"
-            icon="fa-bolt"
+            icon="fa-code"
           />
           <IconButton
             onClick={toggleLexer}

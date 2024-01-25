@@ -1,12 +1,31 @@
 "use state";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Highlight from "../Highlight/Highlight.js";
 import IconButton from "../IconButtons/IconButtons.js";
+import socket from "../Socket/Socket.js";
 import styles from "./ParserPopup.module.scss";
 
 export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
-  if (!isVisible) {
+  const [parserResult, setParserResult] = useState(null);
+
+  const handleParse = useCallback(() => {
+    socket.emit("parse", sessionId);
+  }, []);
+
+  const handleReceiveParse = useCallback(({ success, message }) => {
+    setParserResult({ success, message });
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible) return;
+    handleParse();
+
+    socket.on("parse", handleReceiveParse);
+    return () => socket.off("parse", handleReceiveParse);
+  }, [handleParse, handleReceiveParse, isVisible, sessionId]);
+
+  if (!isVisible || !parserResult) {
     return;
   }
 
@@ -21,8 +40,8 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
             </div>
             <div className="body">
               <Highlight
-                message="There were no syntactical format errors found."
-                type="success"
+                message={parserResult.message}
+                type={parserResult.success ? "success" : "error"}
               />
             </div>
           </div>

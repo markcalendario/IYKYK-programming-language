@@ -20,7 +20,6 @@ export default function LexerPopup({ isVisible, toggleLexer, sessionId }) {
 
   useEffect(() => {
     if (!isVisible) return;
-
     handleLex();
 
     socket.on("lex", handleReceiveLex);
