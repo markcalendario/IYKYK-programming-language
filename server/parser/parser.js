@@ -1,152 +1,280 @@
 import { TokensList } from "../lexer/tokens.js";
 
 export default class Parser {
-  variableValues = [
-    TokensList.Number,
-    TokensList.String,
-    TokensList.Float,
-    TokensList.cap,
-    TokensList.real,
-    TokensList.Identifier
-  ];
-
   constructor(tokens) {
     this.tokens = tokens;
-    this.tokens.push({ token: "END_OF_FILE", lexeme: "EOF" });
-
-    this.dequeuedTokens = [];
-  }
-
-  nextToken() {
-    this.dequeuedTokens.push(this.tokens.shift());
-    console.log(this.dequeuedTokens[this.dequeuedTokens.length - 1]);
+    this.parsedTokens = [];
+    this.tokens.push({ line: "EOF", token: "END_OF_FILE", lexeme: "EOF" });
   }
 
   peekCurrentToken() {
-    const tokens = [...this.tokens];
-    return tokens.shift().token;
+    const token = [...this.tokens];
+    return token.shift()?.token;
   }
 
   peekCurrentLexeme() {
-    const tokens = [...this.tokens];
-    return tokens.shift().lexeme;
+    const token = [...this.tokens];
+    return token.shift()?.lexeme;
   }
 
-  peekPrevToken() {
-    const dequeuedTokens = [...this.dequeuedTokens];
-    return dequeuedTokens.pop().token;
+  peekCurrentLine() {
+    const token = [...this.tokens];
+    return token.shift()?.line;
   }
 
-  peekPrevLexeme() {
-    const dequeuedTokens = [...this.dequeuedTokens];
-    console.log(dequeuedTokens);
-    return dequeuedTokens.pop().lexeme;
+  nextToken() {
+    this.parsedTokens.push(this.tokens.shift());
   }
 
-  getCurrentLineOfCurrentToken() {
-    const tokens = [...this.tokens];
-    return tokens.shift().line;
+  matchToken(expectedToken) {
+    return this.peekCurrentToken() === expectedToken;
   }
 
-  throwExpectation(expectedToken) {
+  raiseExpectation(expectedToken) {
     throw new Error(
-      `Expected token "${expectedToken}" after "${this.peekPrevLexeme()}" (${this.peekPrevToken()}) but encountered "${this.peekCurrentLexeme()}" (${this.peekCurrentToken()}) at line ${this.getCurrentLineOfCurrentToken()}.`
+      `Syntax error occured. Expecting a ${expectedToken} but found ${this.peekCurrentToken()} at line ${this.peekCurrentLine()}`
     );
   }
 
-  parseVariableAssignment() {
-    while (true) {
-      if (this.peekCurrentToken() !== TokensList.Identifier) {
-        this.throwExpectation(TokensList.Identifier);
-      }
+  parseExpression() {
+    return this.parseAddition();
+  }
 
+  parseAddition() {
+    let leftOperand = this.parseSubtraction();
+
+    while (
+      this.matchToken(TokensList["+"]) ||
+      this.matchToken(TokensList["-"])
+    ) {
+      const operator = this.peekCurrentLexeme();
       this.nextToken();
-
-      if (this.peekCurrentToken() === TokensList[","]) {
-        this.nextToken();
-        continue;
-      }
-
-      if (this.peekCurrentToken() === TokensList[";"]) break;
-
-      if (this.peekCurrentToken() !== TokensList["="]) {
-        this.throwExpectation(TokensList["="]);
-      }
-
-      this.nextToken();
-
-      if (!this.variableValues.includes(this.peekCurrentToken())) {
-        this.throwExpectation(this.variableValues.join(" | "));
-      }
-
-      this.nextToken();
-
-      if (this.peekCurrentToken() === TokensList[","]) {
-        this.nextToken();
-        continue;
-      }
-
-      if (this.peekCurrentToken() !== TokensList[";"]) {
-        this.throwExpectation(TokensList[";"]);
-      } else {
-        break;
-      }
+      const rightOperand = this.parseSubtraction();
+      leftOperand = {
+        node: "BinaryExpression",
+        operator,
+        left: leftOperand,
+        right: rightOperand
+      };
     }
+
+    return leftOperand;
+  }
+
+  parseSubtraction() {
+    let leftOperand = this.parseExponentiation();
+
+    while (this.matchToken(TokensList["-"])) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseExponentiation();
+      leftOperand = {
+        node: "BinaryExpression",
+        operator,
+        left: leftOperand,
+        right: rightOperand
+      };
+    }
+
+    return leftOperand;
+  }
+
+  parseExponentiation() {
+    let leftOperand = this.parseMultiplication();
+
+    while (this.matchToken(TokensList["^"])) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseMultiplication();
+      leftOperand = {
+        node: "BinaryExpression",
+        operator,
+        left: leftOperand,
+        right: rightOperand
+      };
+    }
+
+    return leftOperand;
+  }
+
+  parseMultiplication() {
+    let leftOperand = this.parseDivision();
+
+    while (
+      this.matchToken(TokensList["*"]) ||
+      this.matchToken(TokensList["/"]) ||
+      this.matchToken(TokensList["%"])
+    ) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseDivision();
+      leftOperand = {
+        node: "BinaryExpression",
+        operator,
+        left: leftOperand,
+        right: rightOperand
+      };
+    }
+
+    return leftOperand;
+  }
+
+  parseDivision() {
+    let leftOperand = this.parseParenthesis();
+
+    while (
+      this.matchToken(TokensList["/"]) ||
+      this.matchToken(TokensList["%"])
+    ) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseParenthesis();
+      leftOperand = {
+        node: "BinaryExpression",
+        operator,
+        left: leftOperand,
+        right: rightOperand
+      };
+    }
+
+    return leftOperand;
+  }
+
+  parseParenthesis() {
+    if (this.matchToken(TokensList["("])) {
+      this.nextToken();
+      const expressionInsideParenthesis = this.parseExpression();
+      if (!this.matchToken(TokensList[")"])) {
+        this.raiseExpectation(TokensList[")"]);
+      }
+      this.nextToken();
+      return expressionInsideParenthesis;
+    }
+
+    return this.parseIncrementDecrement();
+  }
+
+  parseIncrementDecrement() {
+    let operand = this.parsePrimary();
+
+    while (
+      this.matchToken(TokensList["++"]) ||
+      this.matchToken(TokensList["--"])
+    ) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      operand = {
+        node: "UnaryExpression",
+        operator,
+        operand
+      };
+    }
+
+    return operand;
+  }
+
+  parsePrimary() {
+    if (this.matchToken(TokensList.Identifier)) {
+      const identifier = this.peekCurrentLexeme();
+      this.nextToken();
+      return { node: "Identifier", name: identifier };
+    } else if (this.matchToken(TokensList.Number)) {
+      const number = this.peekCurrentLexeme();
+      this.nextToken();
+      return { node: "Literal", value: parseFloat(number) };
+    } else {
+      this.raiseExpectation("Identifier or Number");
+    }
+  }
+
+  parseVariableAssignment() {
+    this.nextToken();
+
+    let identifier, value;
+
+    if (!this.matchToken(TokensList.Identifier)) {
+      this.raiseExpectation(TokensList.Identifier);
+    }
+
+    identifier = this.peekCurrentLexeme();
+    this.nextToken();
+
+    if (this.matchToken(TokensList[";"])) {
+      this.nextToken();
+      return {
+        node: "VariableDeclaration",
+        identifier,
+        value: null
+      };
+    }
+
+    if (!this.matchToken(TokensList["="])) {
+      this.raiseExpectation(TokensList["="]);
+    }
+
+    this.nextToken();
+
+    value = this.parseExpression();
+
+    if (this.peekCurrentToken() !== TokensList[";"]) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+
+    this.nextToken();
+
+    return {
+      node: "VariableAssignment",
+      identifier,
+      value
+    };
   }
 
   parseConstantAssignment() {
-    while (true) {
-      if (this.peekCurrentToken() !== TokensList.Identifier) {
-        this.throwExpectation(TokensList.Identifier);
-      }
+    this.nextToken();
 
-      this.nextToken();
+    let identifier, value;
 
-      if (this.peekCurrentToken() !== TokensList["="]) {
-        this.throwExpectation(TokensList["="]);
-      }
-
-      this.nextToken();
-
-      if (!this.variableValues.includes(this.peekCurrentToken())) {
-        this.throwExpectation(this.variableValues.join(" | "));
-      }
-
-      this.nextToken();
-
-      if (this.peekCurrentToken() === TokensList[","]) {
-        this.nextToken();
-        continue;
-      }
-
-      if (this.peekCurrentToken() === TokensList[";"]) break;
+    if (!this.matchToken(TokensList.Identifier)) {
+      this.raiseExpectation(TokensList.Identifier);
     }
+
+    identifier = this.peekCurrentLexeme();
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["="])) {
+      this.raiseExpectation(TokensList["="]);
+    }
+
+    this.nextToken();
+
+    value = this.parseExpression();
+
+    if (this.peekCurrentToken() !== TokensList[";"]) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+
+    this.nextToken();
+
+    return {
+      node: "ConstantAssignment",
+      identifier,
+      value
+    };
   }
 
   analyzeSyntax() {
-    while (this.tokens.length > 0) {
-      const currentToken = this.peekCurrentToken();
+    const statements = [];
 
-      // Assignment
-      if (currentToken === TokensList.lit) {
-        this.nextToken();
-        this.parseVariableAssignment();
-        this.nextToken();
-        continue;
-      }
-
-      if (currentToken === TokensList.fire) {
-        this.nextToken();
-        this.parseConstantAssignment();
-        this.nextToken();
-      }
-
-      if (this.peekCurrentToken() === "END_OF_FILE") {
-        this.nextToken();
-        break;
+    while (this.peekCurrentToken() !== "END_OF_FILE") {
+      console.log(this.peekCurrentToken());
+      if (this.peekCurrentToken() === TokensList.lit) {
+        statements.push(this.parseVariableAssignment());
+      } else if (this.peekCurrentToken() === TokensList.fire) {
+        statements.push(this.parseVariableAssignment());
       }
     }
 
-    return 1;
+    console.log(JSON.stringify(statements, null, 1));
+    return statements;
   }
 }

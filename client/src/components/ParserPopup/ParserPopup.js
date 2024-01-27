@@ -13,8 +13,9 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
     socket.emit("parse", sessionId);
   }, []);
 
-  const handleReceiveParse = useCallback(({ success, message }) => {
-    setParserResult({ success, message });
+  const handleReceiveParse = useCallback(({ success, message, tree }) => {
+    console.log(tree);
+    setParserResult({ success, message, tree });
   }, []);
 
   useEffect(() => {
@@ -44,6 +45,7 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
                 type={parserResult.success ? "success" : "error"}
               />
             </div>
+            <p>{JSON.stringify(parserResult?.tree, null, 2)}</p>
           </div>
         </div>
       </div>
