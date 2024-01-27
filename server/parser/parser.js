@@ -181,7 +181,24 @@ export default class Parser {
     } else if (this.matchToken(TokensList.Number)) {
       const number = this.peekCurrentLexeme();
       this.nextToken();
-      return { node: "Literal", value: parseFloat(number) };
+      return { node: TokensList.Number, value: number };
+    } else if (this.matchToken(TokensList['"'])) {
+      this.nextToken();
+      const string = this.peekCurrentLexeme();
+      this.nextToken();
+      this.nextToken();
+      return { node: TokensList.String, value: string };
+    } else if (this.matchToken(TokensList.Float)) {
+      const float = this.peekCurrentLexeme();
+      this.nextToken();
+      return { node: TokensList.Float, value: float };
+    } else if (
+      this.matchToken(TokensList.cap) ||
+      this.matchToken(TokensList.real)
+    ) {
+      const bool = this.peekCurrentLexeme();
+      this.nextToken();
+      return { node: TokensList.Boolean, value: bool };
     } else {
       this.raiseExpectation("Identifier or Number");
     }
@@ -270,7 +287,9 @@ export default class Parser {
       if (this.peekCurrentToken() === TokensList.lit) {
         statements.push(this.parseVariableAssignment());
       } else if (this.peekCurrentToken() === TokensList.fire) {
-        statements.push(this.parseVariableAssignment());
+        statements.push(this.parseConstantAssignment());
+      } else {
+        this.raiseExpectation("Grammar");
       }
     }
 
