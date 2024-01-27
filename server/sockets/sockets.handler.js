@@ -115,13 +115,13 @@ export async function handleLex(socket, sessionId) {
     const content = await getSessionCode(sessionId);
     const lexer = new Lexer(content);
     const result = lexer.generateToken();
-    socket.emit("lex", {
+    io.in(sessionId).emit("lex", {
       success: true,
       message: "Token has been generated successfully.",
       tokens: result
     });
   } catch (error) {
-    socket.emit("lex", {
+    io.in(sessionId).emit("lex", {
       success: false,
       message: error.message
     });
@@ -136,14 +136,14 @@ export async function handleParse(socket, sessionId) {
     const parser = new Parser(tokens);
     const result = parser.analyzeSyntax(tokens);
 
-    socket.emit("parse", {
+    io.in(sessionId).emit("parse", {
       success: true,
       message:
         "Syntax rules analyzed successfully. Parse tree can be seen below.",
       tree: result
     });
   } catch (error) {
-    socket.emit("parse", {
+    io.in(sessionId).emit("parse", {
       success: false,
       message: error.message
     });

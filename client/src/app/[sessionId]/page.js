@@ -41,6 +41,7 @@ function Editor() {
     setCode(text);
     socket.emit("writeCode", { sessionId: sessionId, code: text });
     socket.emit("lex", sessionId);
+    socket.emit("parse", sessionId);
   };
 
   const handleReceiveWriteCode = ({ success, message, code }) => {
