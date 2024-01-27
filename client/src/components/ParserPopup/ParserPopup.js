@@ -33,26 +33,26 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
   }
 
   return (
-    <div className={styles.backdrop}>
-      <div className={styles.parserPopup}>
-        <div className={styles.container}>
-          <div className={styles.wrapper}>
-            <div className={styles.heading}>
-              <h1>Parser Result</h1>
-              <IconButton icon="fa-times" onClick={toggleParser} />
-            </div>
-            <div className="body">
-              <Highlight
-                message={parserResult.message}
-                type={parserResult.success ? "success" : "error"}
-              />
-            </div>
+    <div className={styles.parserPopup}>
+      <div className={styles.container}>
+        <div className={styles.wrapper}>
+          <div className={styles.heading}>
+            <h1>Parser Result</h1>
+            <IconButton icon="fa-times" onClick={toggleParser} />
+          </div>
+          <div className="body">
+            <Highlight
+              message={parserResult.message}
+              type={parserResult.success ? "success" : "error"}
+            />
+          </div>
+          {parserResult.tree && (
             <JsonView
               data={parserResult.tree}
               shouldExpandNode={allExpanded}
               style={darkStyles}
             />
-          </div>
+          )}
         </div>
       </div>
     </div>
