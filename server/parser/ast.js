@@ -9,6 +9,14 @@ export class BinaryExpression {
   }
 }
 
+export class UnaryExpression {
+  constructor(operator, operand) {
+    this.node = "UnaryExpression";
+    this.operator = operator;
+    this.operand = operand;
+  }
+}
+
 export class Number {
   constructor(value) {
     this.node = TokensList.Number;

@@ -8,6 +8,7 @@ import {
   NegativeNumber,
   Number,
   String,
+  UnaryExpression,
   VariableDeclaration
 } from "./ast.js";
 
@@ -73,6 +74,7 @@ export default class Parser {
     while (this.matchToken(TokensList["-"])) {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
+
       const rightOperand = this.parseExponentiation();
       leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
@@ -86,6 +88,7 @@ export default class Parser {
     while (this.matchToken(TokensList["^"])) {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
+
       const rightOperand = this.parseMultiplication();
       leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
@@ -103,6 +106,7 @@ export default class Parser {
     ) {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
+
       const rightOperand = this.parseDivision();
       leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
@@ -119,6 +123,7 @@ export default class Parser {
     ) {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
+
       const rightOperand = this.parseParenthesis();
       leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
@@ -127,17 +132,19 @@ export default class Parser {
   }
 
   parseParenthesis() {
-    if (this.matchToken(TokensList["("])) {
-      this.nextToken();
-      const expressionInsideParenthesis = this.parseExpression();
-      if (!this.matchToken(TokensList[")"])) {
-        this.raiseExpectation(TokensList[")"]);
-      }
-      this.nextToken();
-      return expressionInsideParenthesis;
+    if (!this.matchToken(TokensList["("])) {
+      return this.parseIncrementDecrement();
     }
 
-    return this.parseIncrementDecrement();
+    this.nextToken();
+    const expressionInsideParenthesis = this.parseExpression();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+
+    this.nextToken();
+    return expressionInsideParenthesis;
   }
 
   parseIncrementDecrement() {
@@ -149,18 +156,23 @@ export default class Parser {
     ) {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
-      operand = {
-        node: "UnaryExpression",
-        operator,
-        operand
-      };
+      operand = new UnaryExpression(operator, operand);
     }
 
     return operand;
   }
 
   parsePrimary() {
-    if (this.matchToken(TokensList.Identifier)) {
+    if (
+      this.matchToken(TokensList["++"]) ||
+      this.matchToken(TokensList["--"])
+    ) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const operand = this.peekCurrentLexeme();
+      this.nextToken();
+      return new UnaryExpression(operator, operand);
+    } else if (this.matchToken(TokensList.Identifier)) {
       const identifier = this.peekCurrentLexeme();
       this.nextToken();
       return new Identifier(identifier);
@@ -276,7 +288,7 @@ export default class Parser {
       }
     }
 
-    console.log(JSON.stringify(statements, null, 1));
+    console.log(JSON.stringify(statements, null, 2));
     return statements;
   }
 }

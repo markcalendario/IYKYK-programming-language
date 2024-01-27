@@ -138,7 +138,8 @@ export async function handleParse(socket, sessionId) {
 
     socket.emit("parse", {
       success: true,
-      message: "Token has been generated successfully.",
+      message:
+        "Syntax rules analyzed successfully. Parse tree can be seen below.",
       tree: result
     });
   } catch (error) {
