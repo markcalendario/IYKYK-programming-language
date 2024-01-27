@@ -1,43 +1,68 @@
 import { TokensList } from "../lexer/tokens.js";
 
-export class Expression {
-  constructor(children) {
-    this.type = "Expression";
-    this.children = children;
+export class BinaryExpression {
+  constructor(operator, left, right) {
+    this.node = "BinaryExpression";
+    this.operator = operator;
+    this.left = left;
+    this.right = right;
   }
 }
 
 export class Number {
   constructor(value) {
-    this.type = TokensList.Number;
+    this.node = TokensList.Number;
+    this.value = value;
+  }
+}
+
+export class NegativeNumber {
+  constructor(value) {
+    this.node = "NegativeNumber";
     this.value = value;
   }
 }
 
 export class String {
   constructor(value) {
-    this.type = TokensList.String;
-    this.value = value;
-  }
-}
-
-export class Boolean {
-  constructor(value) {
-    this.type = TokensList.Boolean;
+    this.node = TokensList.String;
     this.value = value;
   }
 }
 
 export class Float {
   constructor(value) {
-    this.type = TokensList.Float;
+    this.node = TokensList.Float;
+    this.value = value;
+  }
+}
+
+export class Bool {
+  constructor(value) {
+    this.node = TokensList.Boolean;
     this.value = value;
   }
 }
 
 export class Identifier {
-  constructor(value) {
-    this.type = TokensList.Identifier;
+  constructor(name) {
+    this.node = TokensList.Identifier;
+    this.name = name;
+  }
+}
+
+export class VariableDeclaration {
+  constructor(identifier, value) {
+    this.node = "VariableDeclaration";
+    this.identifier = identifier;
+    this.value = value;
+  }
+}
+
+export class ConstantAssignment {
+  constructor(identifier, value) {
+    this.node = "ConstantDeclaration";
+    this.identifier = identifier;
     this.value = value;
   }
 }

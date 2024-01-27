@@ -1,4 +1,15 @@
 import { TokensList } from "../lexer/tokens.js";
+import {
+  BinaryExpression,
+  Bool,
+  ConstantAssignment,
+  Float,
+  Identifier,
+  NegativeNumber,
+  Number,
+  String,
+  VariableDeclaration
+} from "./ast.js";
 
 export default class Parser {
   constructor(tokens) {
@@ -50,12 +61,7 @@ export default class Parser {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
       const rightOperand = this.parseSubtraction();
-      leftOperand = {
-        node: "BinaryExpression",
-        operator,
-        left: leftOperand,
-        right: rightOperand
-      };
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
 
     return leftOperand;
@@ -68,12 +74,7 @@ export default class Parser {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
       const rightOperand = this.parseExponentiation();
-      leftOperand = {
-        node: "BinaryExpression",
-        operator,
-        left: leftOperand,
-        right: rightOperand
-      };
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
 
     return leftOperand;
@@ -86,12 +87,7 @@ export default class Parser {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
       const rightOperand = this.parseMultiplication();
-      leftOperand = {
-        node: "BinaryExpression",
-        operator,
-        left: leftOperand,
-        right: rightOperand
-      };
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
 
     return leftOperand;
@@ -108,12 +104,7 @@ export default class Parser {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
       const rightOperand = this.parseDivision();
-      leftOperand = {
-        node: "BinaryExpression",
-        operator,
-        left: leftOperand,
-        right: rightOperand
-      };
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
 
     return leftOperand;
@@ -129,12 +120,7 @@ export default class Parser {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
       const rightOperand = this.parseParenthesis();
-      leftOperand = {
-        node: "BinaryExpression",
-        operator,
-        left: leftOperand,
-        right: rightOperand
-      };
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
 
     return leftOperand;
@@ -177,28 +163,41 @@ export default class Parser {
     if (this.matchToken(TokensList.Identifier)) {
       const identifier = this.peekCurrentLexeme();
       this.nextToken();
-      return { node: "Identifier", name: identifier };
+      return new Identifier(identifier);
     } else if (this.matchToken(TokensList.Number)) {
       const number = this.peekCurrentLexeme();
       this.nextToken();
-      return { node: TokensList.Number, value: number };
+      return new Number(number);
     } else if (this.matchToken(TokensList['"'])) {
       this.nextToken();
       const string = this.peekCurrentLexeme();
       this.nextToken();
       this.nextToken();
-      return { node: TokensList.String, value: string };
+      return new String(string);
     } else if (this.matchToken(TokensList.Float)) {
       const float = this.peekCurrentLexeme();
       this.nextToken();
-      return { node: TokensList.Float, value: float };
+      return new Float(float);
     } else if (
       this.matchToken(TokensList.cap) ||
       this.matchToken(TokensList.real)
     ) {
       const bool = this.peekCurrentLexeme();
       this.nextToken();
-      return { node: TokensList.Boolean, value: bool };
+      return new Bool(bool);
+    } else if (this.matchToken(TokensList["-"])) {
+      this.nextToken();
+      let value;
+      if (
+        !this.matchToken(TokensList.Number) &&
+        !this.matchToken(TokensList.Float)
+      ) {
+        this.raiseExpectation(`${TokensList.Number} | ${TokensList.Float}`);
+      }
+
+      value = "-" + this.peekCurrentLexeme();
+      this.nextToken();
+      return new NegativeNumber(value);
     } else {
       this.raiseExpectation("Identifier or Number");
     }
@@ -207,22 +206,17 @@ export default class Parser {
   parseVariableAssignment() {
     this.nextToken();
 
-    let identifier, value;
-
     if (!this.matchToken(TokensList.Identifier)) {
       this.raiseExpectation(TokensList.Identifier);
     }
 
-    identifier = this.peekCurrentLexeme();
+    const identifier = this.peekCurrentLexeme();
     this.nextToken();
 
     if (this.matchToken(TokensList[";"])) {
       this.nextToken();
-      return {
-        node: "VariableDeclaration",
-        identifier,
-        value: null
-      };
+
+      return new VariableDeclaration(identifier, null);
     }
 
     if (!this.matchToken(TokensList["="])) {
@@ -231,31 +225,24 @@ export default class Parser {
 
     this.nextToken();
 
-    value = this.parseExpression();
+    const value = this.parseExpression();
 
     if (this.peekCurrentToken() !== TokensList[";"]) {
       this.raiseExpectation(TokensList[";"]);
     }
-
     this.nextToken();
 
-    return {
-      node: "VariableAssignment",
-      identifier,
-      value
-    };
+    return new VariableDeclaration(identifier, value);
   }
 
   parseConstantAssignment() {
     this.nextToken();
 
-    let identifier, value;
-
     if (!this.matchToken(TokensList.Identifier)) {
       this.raiseExpectation(TokensList.Identifier);
     }
 
-    identifier = this.peekCurrentLexeme();
+    const identifier = this.peekCurrentLexeme();
     this.nextToken();
 
     if (!this.matchToken(TokensList["="])) {
@@ -264,7 +251,7 @@ export default class Parser {
 
     this.nextToken();
 
-    value = this.parseExpression();
+    const value = this.parseExpression();
 
     if (this.peekCurrentToken() !== TokensList[";"]) {
       this.raiseExpectation(TokensList[";"]);
@@ -272,11 +259,7 @@ export default class Parser {
 
     this.nextToken();
 
-    return {
-      node: "ConstantAssignment",
-      identifier,
-      value
-    };
+    return new ConstantAssignment(identifier, value);
   }
 
   analyzeSyntax() {
