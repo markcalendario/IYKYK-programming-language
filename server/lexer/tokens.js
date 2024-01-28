@@ -48,6 +48,7 @@ export const TokensList = {
   "*=": "Assignment_MultiplyAssign",
   "/=": "Assignment_DivideAssign",
   "%=": "Assignment_ModuloAssign",
+  "^=": "Assignment_ExponentAssign",
 
   "++": "Increment",
   "--": "Decrement",

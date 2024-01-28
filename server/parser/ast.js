@@ -88,3 +88,12 @@ export class ConstantAssignment {
     this.value = value;
   }
 }
+
+export class Assignment {
+  constructor(identifier, operator, value) {
+    this.node = "Assignment";
+    this.operator = operator;
+    this.identifier = identifier;
+    this.value = value;
+  }
+}

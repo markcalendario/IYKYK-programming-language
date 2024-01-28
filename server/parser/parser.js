@@ -1,5 +1,6 @@
 import { TokensList } from "../lexer/tokens.js";
 import {
+  Assignment,
   BinaryExpression,
   Bool,
   ConstantAssignment,
@@ -395,11 +396,6 @@ export default class Parser {
 
     const value = this.parseExpression();
 
-    if (this.peekCurrentToken() !== TokensList[";"]) {
-      this.raiseExpectation(TokensList[";"]);
-    }
-    this.nextToken();
-
     return new VariableDeclaration(identifier, value);
   }
 
@@ -421,13 +417,35 @@ export default class Parser {
 
     const value = this.parseExpression();
 
-    if (this.peekCurrentToken() !== TokensList[";"]) {
-      this.raiseExpectation(TokensList[";"]);
-    }
+    return new ConstantAssignment(identifier, value);
+  }
+
+  parseAssignment() {
+    const identifier = this.peekCurrentLexeme();
 
     this.nextToken();
 
-    return new ConstantAssignment(identifier, value);
+    const assignmentTokens = [
+      TokensList["="],
+      TokensList["+="],
+      TokensList["-="],
+      TokensList["*="],
+      TokensList["/="],
+      TokensList["%="],
+      TokensList["^="]
+    ];
+
+    if (!assignmentTokens.includes(this.peekCurrentToken())) {
+      this.raiseExpectations(assignmentTokens);
+    }
+
+    const operator = this.peekCurrentLexeme();
+
+    this.nextToken();
+
+    const value = this.parseExpression();
+
+    return new Assignment(identifier, operator, value);
   }
 
   analyzeSyntax() {
@@ -440,10 +458,14 @@ export default class Parser {
       if (this.peekCurrentToken() === TokensList.lit) {
         statements.push(this.parseVariableAssignment());
       }
-      //
+      // Constant declaration
       else if (this.peekCurrentToken() === TokensList.fire) {
         statements.push(this.parseConstantAssignment());
-      } else {
+      } else if (this.peekCurrentToken() === TokensList.Identifier) {
+        statements.push(this.parseAssignment());
+      }
+      // Expression
+      else {
         statements.push(this.parseExpression());
       }
     }
