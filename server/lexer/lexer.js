@@ -44,14 +44,28 @@ export default class Lexer {
   }
 
   isValidIdentifier(char) {
-    const regex = /^[a-zA-Z0-9_]+$/;
+    const regex = /^[a-zA-Z0-9_.#]+$/;
     return typeof char === "string" && regex.test(char);
   }
 
   getIdentifier() {
     let identifier = "";
+    let isUndefinedSafety = false;
 
     while (this.isValidIdentifier(this.char)) {
+      if (this.char === "#") {
+        isUndefinedSafety = true;
+
+        if (this.peekNextChar() !== ".") {
+          this.invalidToken(this.char);
+        }
+      }
+
+      // if (this.char === "." && !isUndefinedSafety) {
+      //   console.log(!isUndefinedSafety);
+      //   this.invalidToken(this.char);
+      // }
+
       identifier += this.char;
       this.nextChar();
     }
