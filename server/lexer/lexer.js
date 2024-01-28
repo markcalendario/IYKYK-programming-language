@@ -230,6 +230,7 @@ export default class Lexer {
         this.invalidToken(this.char);
       }
     }
+    this.pushToken(TokensList.END_OF_FILE, TokensList.END_OF_FILE);
     return this.token;
   }
 }

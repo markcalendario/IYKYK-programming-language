@@ -16,7 +16,6 @@ export default class Parser {
   constructor(tokens) {
     this.tokens = tokens;
     this.parsedTokens = [];
-    this.tokens.push({ line: "EOF", token: "END_OF_FILE", lexeme: "EOF" });
   }
 
   peekCurrentToken() {

@@ -276,5 +276,7 @@ export const TokensList = {
   allow: "HTML_Attribute_Allow",
   valueasdate: "HTML_Attribute_ValueAsDate",
   valueasnumber: "HTML_Attribute_ValueAsNumber",
-  content: "HTML_Attribute_Content"
+  content: "HTML_Attribute_Content",
+
+  END_OF_FILE: "END_OF_FILE"
 };
