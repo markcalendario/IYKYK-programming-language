@@ -66,7 +66,78 @@ export default class Parser {
   }
 
   parseExpression() {
-    return this.parseAddition();
+    return this.parseLogicalOr(); // Start with logical OR expressions
+  }
+
+  parseLogicalOr() {
+    let leftOperand = this.parseLogicalAnd();
+
+    while (this.matchToken(TokensList["||"])) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseLogicalAnd();
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
+    }
+
+    return leftOperand;
+  }
+
+  parseLogicalAnd() {
+    let leftOperand = this.parseLogicalNot();
+
+    while (this.matchToken(TokensList["&&"])) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseLogicalNot();
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
+    }
+
+    return leftOperand;
+  }
+
+  parseLogicalNot() {
+    if (this.matchToken(TokensList["!"])) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const operand = this.parseLogicalNot();
+      return new UnaryExpression(operator, operand);
+    }
+
+    return this.parseEquality();
+  }
+
+  parseEquality() {
+    let leftOperand = this.parseComparison();
+
+    while (
+      this.matchToken(TokensList["=="]) ||
+      this.matchToken(TokensList["!="])
+    ) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseComparison();
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
+    }
+
+    return leftOperand;
+  }
+
+  parseComparison() {
+    let leftOperand = this.parseAddition(); // Assuming your existing parseAddition handles arithmetic expressions
+
+    while (
+      this.matchToken(TokensList["<"]) ||
+      this.matchToken(TokensList[">"]) ||
+      this.matchToken(TokensList["<="]) ||
+      this.matchToken(TokensList[">="])
+    ) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const rightOperand = this.parseAddition();
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
+    }
+
+    return leftOperand;
   }
 
   parseAddition() {
@@ -86,9 +157,26 @@ export default class Parser {
   }
 
   parseSubtraction() {
-    let leftOperand = this.parseExponentiation();
+    let leftOperand = this.parseStepwiseIncrementDecrement();
 
     while (this.matchToken(TokensList["-"])) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+
+      const rightOperand = this.parseStepwiseIncrementDecrement();
+      leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
+    }
+
+    return leftOperand;
+  }
+
+  parseStepwiseIncrementDecrement() {
+    let leftOperand = this.parseExponentiation();
+
+    while (
+      this.matchToken(TokensList[">>"]) ||
+      this.matchToken(TokensList["<<"])
+    ) {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
 
@@ -329,14 +417,8 @@ export default class Parser {
       //
       else if (this.peekCurrentToken() === TokensList.fire) {
         statements.push(this.parseConstantAssignment());
-      } else if (this.peekCurrentToken() === TokensList.Identifier) {
-        statements.push(this.parseExpression());
-      } else if (this.peekCurrentToken() === TokensList.Number) {
-        statements.push(this.parseExpression());
-      } else if (this.peekCurrentToken() === TokensList.Float) {
-        statements.push(this.parseExpression());
       } else {
-        this.raiseExpectation("Grammar");
+        statements.push(this.parseExpression());
       }
     }
 
