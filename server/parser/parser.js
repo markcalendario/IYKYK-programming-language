@@ -33,6 +33,16 @@ export default class Parser {
     return token.shift()?.line;
   }
 
+  peekPrevToken() {
+    const parsedTokens = [...this.parsedTokens];
+    return parsedTokens.pop()?.token;
+  }
+
+  peekPrevLexeme() {
+    const parsedTokens = [...this.parsedTokens];
+    return parsedTokens.pop()?.lexeme;
+  }
+
   nextToken() {
     this.parsedTokens.push(this.tokens.shift());
   }
@@ -42,9 +52,8 @@ export default class Parser {
   }
 
   raiseExpectation(expectedToken) {
-    throw new Error(
-      `Syntax error occured. Expecting a ${expectedToken} but found ${this.peekCurrentToken()} at line ${this.peekCurrentLine()}`
-    );
+    const message = `Syntax error occured. Expecting ${expectedToken} after ${this.peekPrevToken()} "${this.peekPrevLexeme()}" but found ${this.peekCurrentToken()} at line ${this.peekCurrentLine()}.`;
+    throw new Error(message);
   }
 
   parseExpression() {
@@ -276,7 +285,7 @@ export default class Parser {
   analyzeSyntax() {
     const statements = [];
 
-    while (this.peekCurrentToken() !== "END_OF_FILE") {
+    while (this.peekCurrentToken() !== TokensList.END_OF_FILE) {
       console.log(this.peekCurrentToken());
       if (this.peekCurrentToken() === TokensList.lit) {
         statements.push(this.parseVariableAssignment());
