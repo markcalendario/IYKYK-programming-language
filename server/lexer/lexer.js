@@ -61,11 +61,6 @@ export default class Lexer {
         }
       }
 
-      // if (this.char === "." && !isUndefinedSafety) {
-      //   console.log(!isUndefinedSafety);
-      //   this.invalidToken(this.char);
-      // }
-
       identifier += this.char;
       this.nextChar();
     }

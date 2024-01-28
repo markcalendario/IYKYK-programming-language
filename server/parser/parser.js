@@ -5,6 +5,7 @@ import {
   Bool,
   ConstantAssignment,
   Float,
+  Function,
   Identifier,
   NegativeFloat,
   NegativeIdentifier,
@@ -66,8 +67,12 @@ export default class Parser {
     throw new Error(message);
   }
 
-  parseExpression() {
-    const expression = this.parseLogicalOr(); // Start with logical OR expressions
+  beginParsingExpressions() {
+    return this.parseLogicalOr(); // Start with logical OR expressions
+  }
+
+  parseExpressions() {
+    const expression = this.beginParsingExpressions();
 
     // Check for the presence of a semicolon
     if (this.matchToken(TokensList[";"])) {
@@ -258,7 +263,7 @@ export default class Parser {
     }
 
     this.nextToken();
-    const expressionInsideParenthesis = this.parseExpression();
+    const expressionInsideParenthesis = this.beginParsingExpressions();
 
     if (!this.matchToken(TokensList[")"])) {
       this.raiseExpectation(TokensList[")"]);
@@ -298,17 +303,6 @@ export default class Parser {
     if (this.matchToken(TokensList.Identifier)) {
       let identifier = this.peekCurrentLexeme();
       this.nextToken();
-
-      // Check for object property access
-      while (this.matchToken(TokensList["."])) {
-        this.nextToken(); // Consume the dot
-        if (this.matchToken(TokensList.Identifier)) {
-          identifier += "." + this.peekCurrentLexeme();
-          this.nextToken();
-        } else {
-          this.raiseExpectation(TokensList.Identifier);
-        }
-      }
 
       return new Identifier(identifier);
     }
@@ -394,7 +388,7 @@ export default class Parser {
 
     this.nextToken();
 
-    const value = this.parseExpression();
+    const value = this.parseExpressions();
 
     return new VariableDeclaration(identifier, value);
   }
@@ -415,7 +409,7 @@ export default class Parser {
 
     this.nextToken();
 
-    const value = this.parseExpression();
+    const value = this.parseExpressions();
 
     return new ConstantAssignment(identifier, value);
   }
@@ -443,9 +437,104 @@ export default class Parser {
 
     this.nextToken();
 
-    const value = this.parseExpression();
+    const value = this.parseExpressions();
 
     return new Assignment(identifier, operator, value);
+  }
+
+  parseRoutine() {
+    this.nextToken();
+
+    const identifier = this.peekCurrentToken();
+    if (identifier !== TokensList.Identifier) {
+      this.raiseExpectation(TokensList.Identifier);
+    }
+
+    this.nextToken();
+
+    if (this.peekCurrentToken() !== TokensList["("]) {
+      this.raiseExpectation(TokensList["("]);
+    }
+
+    this.nextToken();
+
+    const parameters = this.parseFunctionDefinitionParameters();
+
+    if (this.peekCurrentToken() !== TokensList[")"]) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+
+    this.nextToken();
+
+    if (this.peekCurrentToken() !== TokensList["{"]) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+
+    if (this.peekCurrentToken() !== TokensList["}"]) {
+      this.raiseExpectation(TokensList["}"]);
+    }
+
+    this.nextToken();
+
+    return new Function(parameters, statements);
+  }
+
+  parseFunctionDefinitionParameters() {
+    const params = [];
+
+    while (this.matchToken(TokensList.Identifier)) {
+      params.push(new Identifier(this.peekCurrentLexeme()));
+      this.nextToken();
+
+      if (this.matchToken(TokensList[","])) {
+        this.nextToken();
+
+        if (!this.matchToken(TokensList.Identifier)) {
+          this.raiseExpectation(TokensList.Identifier);
+        }
+
+        continue;
+      }
+    }
+
+    return params;
+  }
+
+  parseBlock() {
+    const statements = [];
+
+    while (!this.matchToken(TokensList["}"])) {
+      statements.push(this.parseStatements());
+    }
+
+    return statements;
+  }
+
+  parseStatements() {
+    // Variable assignment
+    if (this.peekCurrentToken() === TokensList.lit) {
+      return this.parseVariableAssignment();
+    }
+    // Constant declaration
+    else if (this.peekCurrentToken() === TokensList.fire) {
+      return this.parseConstantAssignment();
+    }
+    // Function
+    else if (this.peekCurrentToken() === TokensList.routine) {
+      return this.parseRoutine();
+    }
+    //
+    else if (this.peekCurrentToken() === TokensList.Identifier) {
+      return this.parseAssignment();
+    }
+    // Expression
+    else {
+      return this.parseExpressions();
+    }
   }
 
   analyzeSyntax() {
@@ -453,21 +542,7 @@ export default class Parser {
 
     while (this.peekCurrentToken() !== TokensList.END_OF_FILE) {
       console.log(this.peekCurrentToken());
-
-      // Variable assignment
-      if (this.peekCurrentToken() === TokensList.lit) {
-        statements.push(this.parseVariableAssignment());
-      }
-      // Constant declaration
-      else if (this.peekCurrentToken() === TokensList.fire) {
-        statements.push(this.parseConstantAssignment());
-      } else if (this.peekCurrentToken() === TokensList.Identifier) {
-        statements.push(this.parseAssignment());
-      }
-      // Expression
-      else {
-        statements.push(this.parseExpression());
-      }
+      statements.push(this.parseStatements());
     }
 
     console.log(JSON.stringify(statements, null, 2));

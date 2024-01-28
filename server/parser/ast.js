@@ -97,3 +97,11 @@ export class Assignment {
     this.value = value;
   }
 }
+
+export class Function {
+  constructor(parameters, statements) {
+    this.node = "FunctionDefinition";
+    this.parameters = parameters;
+    this.statements = statements;
+  }
+}
