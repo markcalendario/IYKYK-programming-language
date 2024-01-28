@@ -5,6 +5,8 @@ import {
   ConstantAssignment,
   Float,
   Identifier,
+  NegativeFloat,
+  NegativeIdentifier,
   NegativeNumber,
   Number,
   String,
@@ -35,12 +37,12 @@ export default class Parser {
 
   peekPrevToken() {
     const parsedTokens = [...this.parsedTokens];
-    return parsedTokens.pop()?.token;
+    return parsedTokens.pop()?.token || "BEGINNING_OF_FILE";
   }
 
   peekPrevLexeme() {
     const parsedTokens = [...this.parsedTokens];
-    return parsedTokens.pop()?.lexeme;
+    return parsedTokens.pop()?.lexeme || "BEGINNING_OF_FILE";
   }
 
   nextToken() {
@@ -53,6 +55,13 @@ export default class Parser {
 
   raiseExpectation(expectedToken) {
     const message = `Syntax error occured. Expecting ${expectedToken} after ${this.peekPrevToken()} "${this.peekPrevLexeme()}" but found ${this.peekCurrentToken()} at line ${this.peekCurrentLine()}.`;
+    throw new Error(message);
+  }
+
+  raiseExpectations(expectedTokensArray) {
+    const message = `Syntax error occured. Expecting ${expectedTokensArray.join(
+      " | "
+    )} after ${this.peekPrevToken()} "${this.peekPrevLexeme()}" but found ${this.peekCurrentToken()} at line ${this.peekCurrentLine()}.`;
     throw new Error(message);
   }
 
@@ -180,47 +189,71 @@ export default class Parser {
       const operand = this.peekCurrentLexeme();
       this.nextToken();
       return new UnaryExpression(operator, operand);
-    } else if (this.matchToken(TokensList.Identifier)) {
+    }
+
+    if (this.matchToken(TokensList.Identifier)) {
       const identifier = this.peekCurrentLexeme();
       this.nextToken();
       return new Identifier(identifier);
-    } else if (this.matchToken(TokensList.Number)) {
+    }
+
+    if (this.matchToken(TokensList.Number)) {
       const number = this.peekCurrentLexeme();
       this.nextToken();
       return new Number(number);
-    } else if (this.matchToken(TokensList['"'])) {
+    }
+
+    if (this.matchToken(TokensList['"'])) {
       this.nextToken();
       const string = this.peekCurrentLexeme();
       this.nextToken();
       this.nextToken();
       return new String(string);
-    } else if (this.matchToken(TokensList.Float)) {
+    }
+
+    if (this.matchToken(TokensList.Float)) {
       const float = this.peekCurrentLexeme();
       this.nextToken();
       return new Float(float);
-    } else if (
-      this.matchToken(TokensList.cap) ||
-      this.matchToken(TokensList.real)
-    ) {
+    }
+
+    if (this.matchToken(TokensList.cap) || this.matchToken(TokensList.real)) {
       const bool = this.peekCurrentLexeme();
       this.nextToken();
       return new Bool(bool);
-    } else if (this.matchToken(TokensList["-"])) {
-      this.nextToken();
-      let value;
-      if (
-        !this.matchToken(TokensList.Number) &&
-        !this.matchToken(TokensList.Float)
-      ) {
-        this.raiseExpectation(`${TokensList.Number} | ${TokensList.Float}`);
-      }
+    }
 
-      value = "-" + this.peekCurrentLexeme();
+    if (this.matchToken(TokensList["-"])) {
+      this.nextToken();
+      return this.parseNegativeExpression();
+    }
+
+    this.raiseExpectation([TokensList.Identifier, TokensList.Number]);
+  }
+
+  parseNegativeExpression() {
+    let value = "-" + this.peekCurrentLexeme();
+
+    if (this.matchToken(TokensList.Number)) {
       this.nextToken();
       return new NegativeNumber(value);
-    } else {
-      this.raiseExpectation("Identifier or Number");
     }
+
+    if (this.matchToken(TokensList.Float)) {
+      this.nextToken();
+      return new NegativeFloat(value);
+    }
+
+    if (this.matchToken(TokensList.Identifier)) {
+      this.nextToken();
+      return new NegativeIdentifier(value);
+    }
+
+    this.raiseExpectations([
+      TokensList.Number,
+      TokensList.Float,
+      TokensList.Identifier
+    ]);
   }
 
   parseVariableAssignment() {
@@ -287,10 +320,21 @@ export default class Parser {
 
     while (this.peekCurrentToken() !== TokensList.END_OF_FILE) {
       console.log(this.peekCurrentToken());
+
+      // Variable assignment
       if (this.peekCurrentToken() === TokensList.lit) {
         statements.push(this.parseVariableAssignment());
-      } else if (this.peekCurrentToken() === TokensList.fire) {
+      }
+
+      //
+      else if (this.peekCurrentToken() === TokensList.fire) {
         statements.push(this.parseConstantAssignment());
+      } else if (this.peekCurrentToken() === TokensList.Identifier) {
+        statements.push(this.parseExpression());
+      } else if (this.peekCurrentToken() === TokensList.Number) {
+        statements.push(this.parseExpression());
+      } else if (this.peekCurrentToken() === TokensList.Float) {
+        statements.push(this.parseExpression());
       } else {
         this.raiseExpectation("Grammar");
       }

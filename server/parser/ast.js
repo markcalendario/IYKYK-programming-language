@@ -31,6 +31,20 @@ export class NegativeNumber {
   }
 }
 
+export class NegativeFloat {
+  constructor(value) {
+    this.node = "NegativeFloat";
+    this.value = value;
+  }
+}
+
+export class NegativeIdentifier {
+  constructor(value) {
+    this.node = "NegativeIdentifier";
+    this.value = value;
+  }
+}
+
 export class String {
   constructor(value) {
     this.node = TokensList.String;
