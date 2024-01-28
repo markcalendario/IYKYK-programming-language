@@ -66,7 +66,16 @@ export default class Parser {
   }
 
   parseExpression() {
-    return this.parseLogicalOr(); // Start with logical OR expressions
+    const expression = this.parseLogicalOr(); // Start with logical OR expressions
+
+    // Check for the presence of a semicolon
+    if (this.matchToken(TokensList[";"])) {
+      this.nextToken();
+    } else {
+      this.raiseExpectation(TokensList[";"]);
+    }
+
+    return expression;
   }
 
   parseLogicalOr() {
@@ -180,6 +189,12 @@ export default class Parser {
       const operator = this.peekCurrentLexeme();
       this.nextToken();
 
+      const allowedOperand = [TokensList.Number, TokensList.Identifier];
+
+      if (!allowedOperand.includes(this.peekCurrentToken())) {
+        this.raiseExpectations(allowedOperand);
+      }
+
       const rightOperand = this.parseExponentiation();
       leftOperand = new BinaryExpression(operator, leftOperand, rightOperand);
     }
@@ -280,8 +295,20 @@ export default class Parser {
     }
 
     if (this.matchToken(TokensList.Identifier)) {
-      const identifier = this.peekCurrentLexeme();
+      let identifier = this.peekCurrentLexeme();
       this.nextToken();
+
+      // Check for object property access
+      while (this.matchToken(TokensList["."])) {
+        this.nextToken(); // Consume the dot
+        if (this.matchToken(TokensList.Identifier)) {
+          identifier += "." + this.peekCurrentLexeme();
+          this.nextToken();
+        } else {
+          this.raiseExpectation(TokensList.Identifier);
+        }
+      }
+
       return new Identifier(identifier);
     }
 
@@ -413,7 +440,6 @@ export default class Parser {
       if (this.peekCurrentToken() === TokensList.lit) {
         statements.push(this.parseVariableAssignment());
       }
-
       //
       else if (this.peekCurrentToken() === TokensList.fire) {
         statements.push(this.parseConstantAssignment());
