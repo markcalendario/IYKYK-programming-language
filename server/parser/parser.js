@@ -493,7 +493,7 @@ export default class Parser {
 
     this.nextToken();
 
-    if (this.peekCurrentToken() !== TokensList["("]) {
+    if (!this.matchToken(TokensList["("])) {
       this.raiseExpectation(TokensList["("]);
     }
 
@@ -501,13 +501,13 @@ export default class Parser {
 
     const parameters = this.parseFunctionDefinitionParameters();
 
-    if (this.peekCurrentToken() !== TokensList[")"]) {
+    if (!this.matchToken(TokensList[")"])) {
       this.raiseExpectation(TokensList[")"]);
     }
 
     this.nextToken();
 
-    if (this.peekCurrentToken() !== TokensList["{"]) {
+    if (!this.matchToken(TokensList["{"])) {
       this.raiseExpectation(TokensList["{"]);
     }
 
@@ -884,63 +884,58 @@ export default class Parser {
 
   parseStatements() {
     // Variable assignment
-    if (this.peekCurrentToken() === TokensList.lit) {
+    if (this.matchToken(TokensList.lit)) {
       return this.parseVariableAssignment();
     }
     // Constant declaration
-    else if (this.peekCurrentToken() === TokensList.fire) {
+    else if (this.matchToken(TokensList.fire)) {
       return this.parseConstantAssignment();
     }
     // Function
-    else if (this.peekCurrentToken() === TokensList.routine) {
+    else if (this.matchToken(TokensList.routine)) {
       return this.parseRoutine();
     }
     // Delay Function
-    else if (this.peekCurrentToken() === TokensList.delay) {
+    else if (this.matchToken(TokensList.delay)) {
       return this.parseDelayFunction();
     }
     // Chill Routine
-    else if (this.peekCurrentToken() === TokensList.chill) {
+    else if (this.matchToken(TokensList.chill)) {
       return this.parseChillRoutineCall();
     }
     // Identifier start
-    else if (this.peekCurrentToken() === TokensList.Identifier) {
+    else if (this.matchToken(TokensList.Identifier)) {
       return this.parseIdentifierStart();
     }
-    // Yeet
-    else if (this.peekCurrentToken() === TokensList.yeet) {
-      return this.parseConditionals();
-    }
-    // Yas
-    else if (this.peekCurrentToken() === TokensList.yas) {
+    // Yeet or Yas
+    else if (
+      this.matchToken(TokensList.yeet) ||
+      this.matchToken(TokensList.yas)
+    ) {
       return this.parseConditionals();
     }
     // Yikes
-    else if (this.peekCurrentToken() === TokensList.yikes) {
-      return this.parseConditionalYikes();
-    }
-    // Yikes
-    else if (this.peekCurrentToken() === TokensList.yikes) {
+    else if (this.matchToken(TokensList.yikes)) {
       return this.parseConditionalYikes();
     }
     // Sus
-    else if (this.peekCurrentToken() === TokensList.sus) {
+    else if (this.matchToken(TokensList.sus)) {
       return this.parseSus();
     }
     // Dead
-    else if (this.peekCurrentToken() === TokensList.dead) {
+    else if (this.matchToken(TokensList.dead)) {
       return this.parseDead();
     }
-    // Dead
-    else if (this.peekCurrentToken() === TokensList.gotcha) {
+    // Gotcha
+    else if (this.matchToken(TokensList.gotcha)) {
       return this.parseGotcha();
     }
     // Slay
-    else if (this.peekCurrentToken() === TokensList.slay) {
+    else if (this.matchToken(TokensList.slay)) {
       return this.parseSlay();
     }
     // Relapse
-    else if (this.peekCurrentToken() === TokensList.relapse) {
+    else if (this.matchToken(TokensList.relapse)) {
       return this.parseRelapse();
     }
     // Expression
@@ -952,7 +947,7 @@ export default class Parser {
   analyzeSyntax() {
     const statements = [];
 
-    while (this.peekCurrentToken() !== TokensList.END_OF_FILE) {
+    while (!this.matchToken(TokensList.END_OF_FILE)) {
       console.log(this.peekCurrentToken());
       statements.push(this.parseStatements());
     }
