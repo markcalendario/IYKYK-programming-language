@@ -15,6 +15,7 @@ import {
   NegativeIdentifier,
   NegativeNumber,
   Number,
+  Relapse,
   Slay,
   String,
   Sus,
@@ -513,6 +514,7 @@ export default class Parser {
     this.nextToken();
 
     const statements = this.parseBlock();
+
     this.nextToken();
 
     return new Function(identifier, parameters, statements);
@@ -771,6 +773,115 @@ export default class Parser {
     return this.parseSlayMessageString();
   }
 
+  parseRelapse() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+    this.nextToken();
+
+    // as
+    if (!this.matchToken(TokensList.as)) {
+      this.raiseExpectation(TokensList.as);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[":"])) {
+      this.raiseExpectation(TokensList[":"]);
+    }
+    this.nextToken();
+
+    if (
+      !this.matchToken(TokensList.Identifier) &&
+      !this.matchToken(TokensList.Number)
+    ) {
+      this.raiseExpectations([TokensList.Identifier, TokensList.Number]);
+    }
+
+    const asType = this.peekCurrentToken();
+    const asValue = this.peekCurrentLexeme();
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[","])) {
+      this.raiseExpectation(TokensList[","]);
+    }
+    this.nextToken();
+
+    // worse
+    if (!this.matchToken(TokensList.worse)) {
+      this.raiseExpectation(TokensList.worse);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[":"])) {
+      this.raiseExpectation(TokensList[":"]);
+    }
+    this.nextToken();
+
+    if (
+      !this.matchToken(TokensList.Identifier) &&
+      !this.matchToken(TokensList.Number)
+    ) {
+      this.raiseExpectations([TokensList.Identifier, TokensList.Number]);
+    }
+
+    const worseType = this.peekCurrentToken();
+    const worseValue = this.peekCurrentLexeme();
+
+    this.nextToken();
+    console.log(this.peekCurrentLexeme());
+    if (!this.matchToken(TokensList[","])) {
+      this.raiseExpectation(TokensList[","]);
+    }
+    this.nextToken();
+
+    // recover
+    if (!this.matchToken(TokensList.recover)) {
+      this.raiseExpectation(TokensList.recover);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[":"])) {
+      this.raiseExpectation(TokensList[":"]);
+    }
+    this.nextToken();
+
+    if (
+      !this.matchToken(TokensList.Identifier) &&
+      !this.matchToken(TokensList.Number)
+    ) {
+      this.raiseExpectations([TokensList.Identifier, TokensList.Number]);
+    }
+
+    const recoverType = this.peekCurrentToken();
+    const recoverValue = this.peekCurrentLexeme();
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+    this.nextToken();
+
+    const statements = this.parseBlock();
+
+    this.nextToken();
+
+    return new Relapse(
+      { type: asType, value: asValue },
+      { type: worseType, value: worseValue },
+      { type: recoverType, value: recoverValue },
+      statements
+    );
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.peekCurrentToken() === TokensList.lit) {
@@ -827,6 +938,10 @@ export default class Parser {
     // Slay
     else if (this.peekCurrentToken() === TokensList.slay) {
       return this.parseSlay();
+    }
+    // Relapse
+    else if (this.peekCurrentToken() === TokensList.relapse) {
+      return this.parseRelapse();
     }
     // Expression
     else {

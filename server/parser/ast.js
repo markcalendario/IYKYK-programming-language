@@ -151,3 +151,26 @@ export class Slay {
     this.value = value;
   }
 }
+
+export class Relapse {
+  constructor(as, worse, recover, statements) {
+    this.node = "Relapse";
+
+    this.as = {
+      type: as.type,
+      value: as.value
+    };
+
+    this.worse = {
+      type: worse.type,
+      value: worse.value
+    };
+
+    this.recover = {
+      type: recover.type,
+      value: recover.value
+    };
+
+    this.statements = statements;
+  }
+}
