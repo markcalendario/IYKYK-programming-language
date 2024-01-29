@@ -105,3 +105,11 @@ export class Function {
     this.statements = statements;
   }
 }
+
+export class FunctionCall {
+  constructor(functionName, parameters) {
+    this.node = "FunctionCall";
+    this.functionName = functionName;
+    this.parameters = parameters;
+  }
+}

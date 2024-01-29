@@ -6,6 +6,7 @@ import {
   ConstantAssignment,
   Float,
   Function,
+  FunctionCall,
   Identifier,
   NegativeFloat,
   NegativeIdentifier,
@@ -414,7 +415,7 @@ export default class Parser {
     return new ConstantAssignment(identifier, value);
   }
 
-  parseAssignment() {
+  parseIdentifierStart() {
     const identifier = this.peekCurrentLexeme();
 
     this.nextToken();
@@ -429,17 +430,35 @@ export default class Parser {
       TokensList["^="]
     ];
 
-    if (!assignmentTokens.includes(this.peekCurrentToken())) {
-      this.raiseExpectations(assignmentTokens);
+    // For assignment statements
+    if (assignmentTokens.includes(this.peekCurrentToken())) {
+      const operator = this.peekCurrentLexeme();
+      this.nextToken();
+      const value = this.parseExpressions();
+      return new Assignment(identifier, operator, value);
     }
 
-    const operator = this.peekCurrentLexeme();
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectations([...assignmentTokens, TokensList["("]]);
+    }
 
     this.nextToken();
 
-    const value = this.parseExpressions();
+    // For function call
+    const parameters = this.parseFunctionCallParameters();
 
-    return new Assignment(identifier, operator, value);
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+
+    this.nextToken();
+    return new FunctionCall(identifier, parameters);
   }
 
   parseRoutine() {
@@ -500,6 +519,36 @@ export default class Parser {
     return params;
   }
 
+  parseFunctionCallParameters() {
+    const params = [];
+
+    const validTypes = [
+      TokensList["cap"],
+      TokensList["real"],
+      TokensList.Identifier,
+      TokensList.Number,
+      TokensList.Float,
+      TokensList.String
+    ];
+
+    while (validTypes.includes(this.peekCurrentToken())) {
+      params.push(new Identifier(this.peekCurrentLexeme()));
+      this.nextToken();
+
+      if (this.matchToken(TokensList[","])) {
+        this.nextToken();
+
+        if (!validTypes.includes(this.peekCurrentToken())) {
+          this.raiseExpectations(validTypes);
+        }
+
+        continue;
+      }
+    }
+
+    return params;
+  }
+
   parseBlock() {
     const statements = [];
 
@@ -525,7 +574,7 @@ export default class Parser {
     }
     //
     else if (this.peekCurrentToken() === TokensList.Identifier) {
-      return this.parseAssignment();
+      return this.parseIdentifierStart();
     }
     // Expression
     else {

@@ -53,6 +53,12 @@ export default class Lexer {
     let isUndefinedSafety = false;
 
     while (this.isValidIdentifier(this.char)) {
+      if (this.char === ".") {
+        if (this.peekNextChar() === ".") {
+          this.invalidToken(this.char);
+        }
+      }
+
       if (this.char === "#") {
         isUndefinedSafety = true;
 
