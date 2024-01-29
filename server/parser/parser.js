@@ -5,15 +5,19 @@ import {
   Bool,
   Conditional,
   ConstantAssignment,
+  Dead,
   Float,
   Function,
   FunctionCall,
+  Gotcha,
   Identifier,
   NegativeFloat,
   NegativeIdentifier,
   NegativeNumber,
   Number,
+  Slay,
   String,
+  Sus,
   UnaryExpression,
   VariableDeclaration
 } from "./ast.js";
@@ -647,6 +651,126 @@ export default class Parser {
     return this.parseFunctionCall(identifier);
   }
 
+  parseSus() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+
+    if (!this.matchToken(TokensList["}"])) {
+      this.raiseExpectation(TokensList["}"]);
+    }
+
+    this.nextToken();
+    return new Sus(statements);
+  }
+
+  parseDead() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList.Identifier)) {
+      this.raiseExpectation(TokensList.Identifier);
+    }
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+
+    if (!this.matchToken(TokensList["}"])) {
+      this.raiseExpectation(TokensList["}"]);
+    }
+
+    this.nextToken();
+    return new Dead(statements);
+  }
+
+  parseGotcha() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+
+    if (!this.matchToken(TokensList["}"])) {
+      this.raiseExpectation(TokensList["}"]);
+    }
+
+    this.nextToken();
+    return new Gotcha(statements);
+  }
+
+  parseSlayMessageIdentifier() {
+    const identifier = this.peekCurrentLexeme();
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+
+    this.nextToken();
+
+    return new Slay(TokensList.Identifier, identifier);
+  }
+
+  parseSlayMessageString() {
+    if (!this.matchToken(TokensList.String)) {
+      this.raiseExpectation(TokensList.String);
+    }
+
+    const message = this.peekCurrentLexeme();
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList['"'])) {
+      this.raiseExpectation(TokensList['"']);
+    }
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+
+    this.nextToken();
+
+    return new Slay(TokensList.String, message);
+  }
+
+  parseSlay() {
+    this.nextToken();
+
+    if (
+      !this.matchToken(TokensList['"']) &&
+      !this.matchToken(TokensList.Identifier)
+    ) {
+      this.raiseExpectations([TokensList.String, TokensList.Identifier]);
+    }
+
+    if (this.matchToken(TokensList.Identifier)) {
+      return this.parseSlayMessageIdentifier();
+    }
+
+    // Advance after first colon
+    this.nextToken();
+
+    return this.parseSlayMessageString();
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.peekCurrentToken() === TokensList.lit) {
@@ -683,6 +807,26 @@ export default class Parser {
     // Yikes
     else if (this.peekCurrentToken() === TokensList.yikes) {
       return this.parseConditionalYikes();
+    }
+    // Yikes
+    else if (this.peekCurrentToken() === TokensList.yikes) {
+      return this.parseConditionalYikes();
+    }
+    // Sus
+    else if (this.peekCurrentToken() === TokensList.sus) {
+      return this.parseSus();
+    }
+    // Dead
+    else if (this.peekCurrentToken() === TokensList.dead) {
+      return this.parseDead();
+    }
+    // Dead
+    else if (this.peekCurrentToken() === TokensList.gotcha) {
+      return this.parseGotcha();
+    }
+    // Slay
+    else if (this.peekCurrentToken() === TokensList.slay) {
+      return this.parseSlay();
     }
     // Expression
     else {

@@ -122,3 +122,32 @@ export class Conditional {
     this.statements = statements;
   }
 }
+
+export class Sus {
+  constructor(statements) {
+    this.node = "Sus";
+    this.statements = statements;
+  }
+}
+
+export class Dead {
+  constructor(statements) {
+    this.node = "Dead";
+    this.statements = statements;
+  }
+}
+
+export class Gotcha {
+  constructor(statements) {
+    this.node = "Gotcha";
+    this.statements = statements;
+  }
+}
+
+export class Slay {
+  constructor(messageType, value) {
+    this.node = "Slay";
+    this.messageType = messageType;
+    this.value = value;
+  }
+}
