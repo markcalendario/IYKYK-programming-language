@@ -1,12 +1,11 @@
 "use state";
 
-import { useCallback, useEffect, useState } from "react";
-import ReactJson from "react-json-view";
-
+import { lazy, useCallback, useEffect, useState } from "react";
 import Highlight from "../Highlight/Highlight.js";
 import IconButton from "../IconButtons/IconButtons.js";
 import socket from "../Socket/Socket.js";
 import styles from "./ParserPopup.module.scss";
+const ReactJson = lazy(() => import("react-json-view"));
 
 export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
   const [parserResult, setParserResult] = useState(null);
@@ -16,7 +15,6 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
   }, []);
 
   const handleReceiveParse = useCallback(({ success, message, tree }) => {
-    console.log(tree);
     setParserResult({ success, message, tree });
   }, []);
 

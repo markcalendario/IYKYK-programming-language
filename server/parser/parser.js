@@ -831,7 +831,7 @@ export default class Parser {
     const worseValue = this.peekCurrentLexeme();
 
     this.nextToken();
-    console.log(this.peekCurrentLexeme());
+
     if (!this.matchToken(TokensList[","])) {
       this.raiseExpectation(TokensList[","]);
     }
