@@ -464,8 +464,8 @@ export default class Parser {
   parseRoutine() {
     this.nextToken();
 
-    const identifier = this.peekCurrentToken();
-    if (identifier !== TokensList.Identifier) {
+    const identifier = this.peekCurrentLexeme();
+    if (!this.matchToken(TokensList.Identifier)) {
       this.raiseExpectation(TokensList.Identifier);
     }
 
@@ -494,8 +494,8 @@ export default class Parser {
     const statements = this.parseBlock();
 
     this.nextToken();
-
-    return new Function(parameters, statements);
+    console.log(identifier);
+    return new Function(identifier, parameters, statements);
   }
 
   parseFunctionDefinitionParameters() {

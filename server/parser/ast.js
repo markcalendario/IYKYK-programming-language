@@ -99,8 +99,9 @@ export class Assignment {
 }
 
 export class Function {
-  constructor(parameters, statements) {
+  constructor(identifier, parameters, statements) {
     this.node = "FunctionDefinition";
+    this.identifier = identifier;
     this.parameters = parameters;
     this.statements = statements;
   }
