@@ -114,3 +114,11 @@ export class FunctionCall {
     this.parameters = parameters;
   }
 }
+
+export class Conditional {
+  constructor(condition, statements) {
+    this.node = "Conditional";
+    this.condition = condition;
+    this.statements = statements;
+  }
+}

@@ -3,6 +3,7 @@ import {
   Assignment,
   BinaryExpression,
   Bool,
+  Conditional,
   ConstantAssignment,
   Float,
   Function,
@@ -495,9 +496,8 @@ export default class Parser {
     this.nextToken();
 
     const statements = this.parseBlock();
-
     this.nextToken();
-    console.log(identifier);
+
     return new Function(identifier, parameters, statements);
   }
 
@@ -562,6 +562,54 @@ export default class Parser {
     return statements;
   }
 
+  parseConditions() {
+    return this.beginParsingExpressions();
+  }
+
+  parseConditionals() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+
+    this.nextToken();
+
+    const conditions = this.parseConditions();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+    this.nextToken();
+
+    return new Conditional(conditions, statements);
+  }
+
+  parseConditionalYikes() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+    this.nextToken();
+
+    return new Conditional(null, statements);
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.peekCurrentToken() === TokensList.lit) {
@@ -578,6 +626,18 @@ export default class Parser {
     // Identifier start
     else if (this.peekCurrentToken() === TokensList.Identifier) {
       return this.parseIdentifierStart();
+    }
+    // Yeet
+    else if (this.peekCurrentToken() === TokensList.yeet) {
+      return this.parseConditionals();
+    }
+    // Yas
+    else if (this.peekCurrentToken() === TokensList.yas) {
+      return this.parseConditionals();
+    }
+    // Yikes
+    else if (this.peekCurrentToken() === TokensList.yikes) {
+      return this.parseConditionalYikes();
     }
     // Expression
     else {
