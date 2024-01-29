@@ -50,6 +50,7 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
               <ReactJson
                 src={parserResult.tree}
                 style={{ overflow: "auto" }}
+                name={"IYKYK"}
                 theme="grayscale"
                 displayArrayKey={false}
                 indentWidth={3}
