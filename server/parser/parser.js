@@ -427,6 +427,12 @@ export default class Parser {
   }
 
   parseFunctionCall(identifier) {
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+
+    this.nextToken();
+
     // For function call
     const parameters = this.parseFunctionCallParameters();
 
@@ -468,8 +474,6 @@ export default class Parser {
     if (!this.matchToken(TokensList["("])) {
       this.raiseExpectations([...assignmentTokens, TokensList["("]]);
     }
-
-    this.nextToken();
 
     return this.parseFunctionCall(identifier);
   }
@@ -629,6 +633,20 @@ export default class Parser {
     return this.parseRoutine();
   }
 
+  parseChillRoutineCall() {
+    this.nextToken();
+
+    const identifier = this.peekCurrentLexeme();
+
+    if (!this.matchToken(TokensList.Identifier)) {
+      this.raiseExpectation(TokensList.Identifier);
+    }
+
+    this.nextToken();
+
+    return this.parseFunctionCall(identifier);
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.peekCurrentToken() === TokensList.lit) {
@@ -642,9 +660,13 @@ export default class Parser {
     else if (this.peekCurrentToken() === TokensList.routine) {
       return this.parseRoutine();
     }
-    // Function
+    // Delay Function
     else if (this.peekCurrentToken() === TokensList.delay) {
       return this.parseDelayFunction();
+    }
+    // Chill Routine
+    else if (this.peekCurrentToken() === TokensList.chill) {
+      return this.parseChillRoutineCall();
     }
     // Identifier start
     else if (this.peekCurrentToken() === TokensList.Identifier) {
