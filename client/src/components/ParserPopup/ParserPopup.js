@@ -1,8 +1,8 @@
 "use state";
 
 import { useCallback, useEffect, useState } from "react";
-import { JsonView, allExpanded, darkStyles } from "react-json-view-lite";
-import "react-json-view-lite/dist/index.css";
+import ReactJson from "react-json-view";
+
 import Highlight from "../Highlight/Highlight.js";
 import IconButton from "../IconButtons/IconButtons.js";
 import socket from "../Socket/Socket.js";
@@ -40,19 +40,26 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
             <h1>Parser Result</h1>
             <IconButton icon="fa-times" onClick={toggleParser} />
           </div>
-          <div className="body">
+          <div className={styles.body}>
             <Highlight
               message={parserResult.message}
               type={parserResult.success ? "success" : "error"}
             />
+
+            {parserResult.tree && (
+              <ReactJson
+                src={parserResult.tree}
+                style={{ overflow: "auto" }}
+                theme="grayscale"
+                displayArrayKey={false}
+                indentWidth={3}
+                displayObjectSize={false}
+                displayDataTypes={false}
+                enableClipboard={false}
+                collapsed={false}
+              />
+            )}
           </div>
-          {parserResult.tree && (
-            <JsonView
-              data={parserResult.tree}
-              shouldExpandNode={allExpanded}
-              style={darkStyles}
-            />
-          )}
         </div>
       </div>
     </div>

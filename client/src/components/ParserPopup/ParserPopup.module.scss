@@ -3,16 +3,17 @@
 
 .parserPopup {
   background-color: colors.$primary;
-  max-width: 100%;
+  width: 100%;
   position: fixed;
   height: 100vh;
   z-index: 1;
   right: 0;
   padding: 10px;
+  overflow: auto;
   animation: parserPopupAnim 0.5s ease;
 
   @include screens.tabletAndDesktop {
-    max-width: 550px;
+    width: 550px;
   }
 
   .container {
@@ -25,6 +26,12 @@
         display: flex;
         justify-content: space-between;
         color: colors.$white;
+      }
+
+      .body {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
       }
     }
   }

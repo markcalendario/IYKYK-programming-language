@@ -15,12 +15,18 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "react-json-view-lite": "^1.2.1",
+    "react-json-view": "^1.21.3",
     "sass": "^1.69.5",
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
     "eslint": "^8",
     "eslint-config-next": "14.0.4"
+  },
+  "overrides": {
+    "react-json-view": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }
