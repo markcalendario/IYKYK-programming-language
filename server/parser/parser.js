@@ -375,12 +375,14 @@ export default class Parser {
     }
 
     const identifier = this.peekCurrentLexeme();
+
     this.nextToken();
 
     if (this.matchToken(TokensList[";"])) {
+      // Allow declaration, no value.
       this.nextToken();
 
-      return new VariableDeclaration(identifier, null);
+      return new VariableDeclaration(identifier, undefined);
     }
 
     if (!this.matchToken(TokensList["="])) {
@@ -404,6 +406,7 @@ export default class Parser {
     const identifier = this.peekCurrentLexeme();
     this.nextToken();
 
+    // Require value upon declaration
     if (!this.matchToken(TokensList["="])) {
       this.raiseExpectation(TokensList["="]);
     }
@@ -463,8 +466,8 @@ export default class Parser {
 
   parseRoutine() {
     this.nextToken();
-
     const identifier = this.peekCurrentLexeme();
+
     if (!this.matchToken(TokensList.Identifier)) {
       this.raiseExpectation(TokensList.Identifier);
     }
@@ -505,14 +508,14 @@ export default class Parser {
       params.push(new Identifier(this.peekCurrentLexeme()));
       this.nextToken();
 
-      if (this.matchToken(TokensList[","])) {
-        this.nextToken();
+      if (!this.matchToken(TokensList[","])) {
+        break;
+      }
 
-        if (!this.matchToken(TokensList.Identifier)) {
-          this.raiseExpectation(TokensList.Identifier);
-        }
+      this.nextToken();
 
-        continue;
+      if (!this.matchToken(TokensList.Identifier)) {
+        this.raiseExpectation(TokensList.Identifier);
       }
     }
 
@@ -535,14 +538,14 @@ export default class Parser {
       params.push(new Identifier(this.peekCurrentLexeme()));
       this.nextToken();
 
-      if (this.matchToken(TokensList[","])) {
-        this.nextToken();
+      if (!this.matchToken(TokensList[","])) {
+        break;
+      }
 
-        if (!validTypes.includes(this.peekCurrentToken())) {
-          this.raiseExpectations(validTypes);
-        }
+      this.nextToken();
 
-        continue;
+      if (!validTypes.includes(this.peekCurrentToken())) {
+        this.raiseExpectations(validTypes);
       }
     }
 
@@ -572,7 +575,7 @@ export default class Parser {
     else if (this.peekCurrentToken() === TokensList.routine) {
       return this.parseRoutine();
     }
-    //
+    // Identifier start
     else if (this.peekCurrentToken() === TokensList.Identifier) {
       return this.parseIdentifierStart();
     }
@@ -590,7 +593,6 @@ export default class Parser {
       statements.push(this.parseStatements());
     }
 
-    console.log(JSON.stringify(statements, null, 2));
     return statements;
   }
 }
