@@ -338,7 +338,7 @@ export default class Parser {
       return this.parseNegativeExpression();
     }
 
-    this.raiseExpectation([TokensList.Identifier, TokensList.Number]);
+    this.raiseExpectations([TokensList.Identifier, TokensList.Number]);
   }
 
   parseNegativeExpression() {
@@ -473,10 +473,6 @@ export default class Parser {
     this.nextToken();
 
     const statements = this.parseBlock();
-
-    if (this.peekCurrentToken() !== TokensList["}"]) {
-      this.raiseExpectation(TokensList["}"]);
-    }
 
     this.nextToken();
 
