@@ -1,4 +1,9 @@
-import { TokensList, htmlTagAttributes, htmlTags } from "../lexer/tokens.js";
+import {
+  TokensList,
+  assignmentTokens,
+  htmlTagAttributes,
+  htmlTags
+} from "../lexer/tokens.js";
 import {
   Assignment,
   BinaryExpression,
@@ -499,19 +504,16 @@ export default class Parser {
   }
 
   parseIdentifierStart() {
+    if (
+      !assignmentTokens.includes(this.peekCurrentToken()) &&
+      !this.matchToken(["("])
+    ) {
+      return this.parseExpressions();
+    }
+
     const identifier = this.peekCurrentLexeme();
 
     this.nextToken();
-
-    const assignmentTokens = [
-      TokensList["="],
-      TokensList["+="],
-      TokensList["-="],
-      TokensList["*="],
-      TokensList["/="],
-      TokensList["%="],
-      TokensList["^="]
-    ];
 
     // For assignment statements
 
@@ -519,11 +521,11 @@ export default class Parser {
       return this.parseAssignment(identifier);
     }
 
-    if (!this.matchToken(TokensList["("])) {
-      this.raiseExpectations([...assignmentTokens, TokensList["("]]);
-    }
+    // Function call
 
-    return this.parseFunctionCall(identifier);
+    if (this.matchToken(TokensList["("])) {
+      return this.parseFunctionCall(identifier);
+    }
   }
 
   parseRoutine() {

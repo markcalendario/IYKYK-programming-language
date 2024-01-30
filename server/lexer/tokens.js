@@ -416,3 +416,13 @@ export const htmlTagAttributes = [
   TokensList.content,
   TokensList.tag
 ];
+
+export const assignmentTokens = [
+  TokensList["="],
+  TokensList["+="],
+  TokensList["-="],
+  TokensList["*="],
+  TokensList["/="],
+  TokensList["%="],
+  TokensList["^="]
+];
