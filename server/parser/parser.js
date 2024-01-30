@@ -792,11 +792,8 @@ export default class Parser {
     }
     this.nextToken();
 
-    if (
-      !this.matchToken(TokensList.Identifier) &&
-      !this.matchToken(TokensList.Number)
-    ) {
-      this.raiseExpectations([TokensList.Identifier, TokensList.Number]);
+    if (!this.matchToken(TokensList.Identifier)) {
+      this.raiseExpectation(TokensList.Identifier);
     }
 
     const asType = this.peekCurrentToken();
@@ -804,8 +801,8 @@ export default class Parser {
 
     this.nextToken();
 
-    if (!this.matchToken(TokensList[","])) {
-      this.raiseExpectation(TokensList[","]);
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
     }
     this.nextToken();
 
@@ -832,8 +829,8 @@ export default class Parser {
 
     this.nextToken();
 
-    if (!this.matchToken(TokensList[","])) {
-      this.raiseExpectation(TokensList[","]);
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
     }
     this.nextToken();
 
