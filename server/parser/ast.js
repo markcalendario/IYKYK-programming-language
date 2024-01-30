@@ -174,3 +174,10 @@ export class Relapse {
     this.statements = statements;
   }
 }
+
+export class Flex {
+  constructor(args) {
+    this.node = "Flex";
+    this.arguments = args;
+  }
+}

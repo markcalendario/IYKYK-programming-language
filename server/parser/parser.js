@@ -6,6 +6,7 @@ import {
   Conditional,
   ConstantAssignment,
   Dead,
+  Flex,
   Float,
   Function,
   FunctionCall,
@@ -879,6 +880,68 @@ export default class Parser {
     );
   }
 
+  parseFlexArgs() {
+    const args = [];
+
+    const validArgs = [
+      TokensList.Identifier,
+      TokensList.String,
+      TokensList.Number,
+      TokensList.Float,
+      TokensList.cap,
+      TokensList.real
+    ];
+
+    while (
+      validArgs.includes(this.peekCurrentToken()) ||
+      this.matchToken(TokensList['"'])
+    ) {
+      if (this.matchToken(TokensList['"'])) {
+        this.nextToken();
+      }
+
+      args.push(this.peekCurrentLexeme());
+      this.nextToken();
+
+      if (this.matchToken(TokensList['"'])) {
+        this.nextToken();
+      }
+
+      if (!this.matchToken(TokensList["+"])) break;
+      this.nextToken();
+
+      if (this.matchToken(TokensList[")"])) {
+        this.raiseExpectations(validArgs);
+      }
+    }
+
+    return args;
+  }
+
+  parseFlex() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+
+    this.nextToken();
+
+    const args = this.parseFlexArgs();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+    this.nextToken();
+
+    return new Flex(args);
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.matchToken(TokensList.lit)) {
@@ -934,6 +997,10 @@ export default class Parser {
     // Relapse
     else if (this.matchToken(TokensList.relapse)) {
       return this.parseRelapse();
+    }
+    // Flex
+    else if (this.matchToken(TokensList.flex)) {
+      return this.parseFlex();
     }
     // Expression
     else {
