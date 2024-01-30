@@ -181,3 +181,10 @@ export class Flex {
     this.arguments = args;
   }
 }
+
+export class Spill {
+  constructor(variable) {
+    this.node = "Spill";
+    this.identifier = variable;
+  }
+}

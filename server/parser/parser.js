@@ -18,6 +18,7 @@ import {
   Number,
   Relapse,
   Slay,
+  Spill,
   String,
   Sus,
   UnaryExpression,
@@ -346,7 +347,15 @@ export default class Parser {
       return this.parseNegativeExpression();
     }
 
-    this.raiseExpectations([TokensList.Identifier, TokensList.Number]);
+    this.raiseExpectations([
+      TokensList.Identifier,
+      TokensList.Number,
+      TokensList["++"],
+      TokensList["--"],
+      TokensList.String,
+      TokensList.Float,
+      TokensList.Boolean
+    ]);
   }
 
   parseNegativeExpression() {
@@ -374,6 +383,27 @@ export default class Parser {
     ]);
   }
 
+  parseSpill(identifier = undefined) {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+    this.nextToken();
+
+    return new Spill(identifier);
+  }
+
   parseVariableAssignment() {
     this.nextToken();
 
@@ -395,11 +425,13 @@ export default class Parser {
     if (!this.matchToken(TokensList["="])) {
       this.raiseExpectation(TokensList["="]);
     }
-
     this.nextToken();
 
-    const value = this.parseExpressions();
+    if (this.matchToken(TokensList.spill)) {
+      return this.parseSpill(identifier);
+    }
 
+    const value = this.parseExpressions();
     return new VariableDeclaration(identifier, value);
   }
 
@@ -420,6 +452,10 @@ export default class Parser {
 
     this.nextToken();
 
+    if (this.matchToken(TokensList.spill)) {
+      return this.parseSpill(identifier);
+    }
+
     const value = this.parseExpressions();
 
     return new ConstantAssignment(identifier, value);
@@ -428,6 +464,11 @@ export default class Parser {
   parseAssignment(identifier) {
     const operator = this.peekCurrentLexeme();
     this.nextToken();
+
+    if (this.matchToken(TokensList.spill)) {
+      return this.parseSpill(identifier);
+    }
+
     const value = this.parseExpressions();
     return new Assignment(identifier, operator, value);
   }
@@ -1001,6 +1042,10 @@ export default class Parser {
     // Flex
     else if (this.matchToken(TokensList.flex)) {
       return this.parseFlex();
+    }
+    // Spill
+    else if (this.matchToken(TokensList.spill)) {
+      return this.parseSpill();
     }
     // Expression
     else {
