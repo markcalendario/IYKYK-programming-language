@@ -1,4 +1,4 @@
-import { TokensList } from "../lexer/tokens.js";
+import { TokensList, htmlTagAttributes, htmlTags } from "../lexer/tokens.js";
 import {
   Assignment,
   BinaryExpression,
@@ -11,6 +11,7 @@ import {
   Function,
   FunctionCall,
   Gotcha,
+  Htmlize,
   Identifier,
   NegativeFloat,
   NegativeIdentifier,
@@ -983,6 +984,72 @@ export default class Parser {
     return new Flex(args);
   }
 
+  parseHTMLize() {
+    this.nextToken();
+    const tags = [];
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+    this.nextToken();
+
+    while (htmlTags.includes(this.peekCurrentToken())) {
+      const tag = { tag: this.peekCurrentLexeme() };
+      const attributes = [];
+
+      this.nextToken();
+
+      if (!this.matchToken(TokensList["{"])) {
+        this.raiseExpectation(TokensList["{"]);
+      }
+      this.nextToken();
+
+      while (htmlTagAttributes.includes(this.peekCurrentToken())) {
+        const key = this.peekCurrentLexeme();
+        this.nextToken();
+
+        if (!this.matchToken(TokensList[":"])) {
+          this.raiseExpectation(TokensList[":"]);
+        }
+        this.nextToken();
+
+        if (!this.matchToken(TokensList.Identifier)) {
+          this.raiseExpectation(TokensList.Identifier);
+        }
+        const value = this.peekCurrentLexeme();
+        this.nextToken();
+
+        attributes.push({ key, value });
+      }
+
+      if (!this.matchToken(TokensList["}"])) {
+        this.raiseExpectation(TokensList["}"]);
+      }
+      this.nextToken();
+
+      tags.push({ tag, ...attributes });
+    }
+
+    if (!this.matchToken(TokensList["}"])) {
+      this.raiseExpectation(TokensList["}"]);
+    }
+    this.nextToken();
+
+    return new Htmlize(tags);
+  }
+
+  parseAnonStatement() {
+    this.nextToken();
+    const statements = this.parseBlock();
+
+    if (!this.matchToken(TokensList["}"])) {
+      this.raiseExpectation(TokensList["}"]);
+    }
+    this.nextToken();
+
+    return statements;
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.matchToken(TokensList.lit)) {
@@ -1046,6 +1113,14 @@ export default class Parser {
     // Spill
     else if (this.matchToken(TokensList.spill)) {
       return this.parseSpill();
+    }
+    // HTMLize
+    else if (this.matchToken(TokensList.htmlize)) {
+      return this.parseHTMLize();
+    }
+    // Anonymous Statement
+    else if (this.matchToken(TokensList["{"])) {
+      return this.parseAnonStatement();
     }
     // Expression
     else {

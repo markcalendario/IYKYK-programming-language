@@ -188,3 +188,21 @@ export class Spill {
     this.identifier = variable;
   }
 }
+
+export class Htmlize {
+  constructor(tags) {
+    this.node = "HTMLize";
+    this.tags = tags;
+  }
+}
+
+export class HtmlizeTag {
+  constructor(tag, attributes) {
+    this.node = "HTMLizeTag";
+    this.tag = tag;
+
+    for (const attribute of attributes) {
+      this[attribute].key = attribute.value;
+    }
+  }
+}
