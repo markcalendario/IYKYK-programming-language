@@ -1,3 +1,5 @@
 node_modules
-sessions/*
 .env.production
+
+sessions/*
+!sessions/.gitkeep
