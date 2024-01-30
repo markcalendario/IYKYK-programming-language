@@ -202,3 +202,14 @@ export class Bounce {
     this.expression = expression;
   }
 }
+
+export class Bet {
+  constructor(value, valueType, expression) {
+    this.value = {
+      value,
+      valueType
+    };
+
+    this.expression = expression;
+  }
+}

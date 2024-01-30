@@ -6,6 +6,7 @@ import {
 } from "../lexer/tokens.js";
 import {
   Assignment,
+  Bet,
   BinaryExpression,
   Bool,
   Bounce,
@@ -1066,6 +1067,55 @@ export default class Parser {
     return new Bounce(this.parseExpressions());
   }
 
+  parseBet() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+    this.nextToken();
+
+    if (
+      !this.matchToken(TokensList.Identifier) &&
+      !this.matchToken(TokensList['"'])
+    ) {
+      this.raiseExpectations([TokensList.Identifier, TokensList.String]);
+    }
+
+    let valueType, value;
+
+    if (this.matchToken(TokensList['"'])) {
+      this.nextToken();
+      valueType = this.peekCurrentToken();
+      value = this.peekCurrentLexeme();
+      this.nextToken();
+    } else {
+      valueType = this.peekCurrentToken();
+      value = this.peekCurrentLexeme();
+    }
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[","])) {
+      this.raiseExpectation(TokensList[","]);
+    }
+    this.nextToken();
+
+    const expression = this.beginParsingExpressions();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+    this.nextToken();
+
+    return new Bet(value, valueType, expression);
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.matchToken(TokensList.lit)) {
@@ -1141,6 +1191,10 @@ export default class Parser {
     // Return
     else if (this.matchToken(TokensList.bounce)) {
       return this.parseBounce();
+    }
+    // Bet
+    else if (this.matchToken(TokensList.bet)) {
+      return this.parseBet();
     }
     // Expression
     else {
