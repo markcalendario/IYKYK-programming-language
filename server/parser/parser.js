@@ -1015,13 +1015,21 @@ export default class Parser {
         }
         this.nextToken();
 
-        if (!this.matchToken(TokensList.Identifier)) {
-          this.raiseExpectation(TokensList.Identifier);
+        if (this.matchToken(TokensList.Identifier)) {
+          const identifier = this.peekCurrentLexeme();
+          this.nextToken();
+          attributes.push({ key, value: identifier });
+          continue;
+        } else if (this.matchToken(TokensList['"'])) {
+          this.nextToken();
+          const string = this.peekCurrentLexeme();
+          this.nextToken();
+          this.nextToken();
+          attributes.push({ key, value: string });
+          continue;
         }
-        const value = this.peekCurrentLexeme();
-        this.nextToken();
 
-        attributes.push({ key, value });
+        this.raiseExpectations([TokensList.Identifier, TokensList.String]);
       }
 
       if (!this.matchToken(TokensList["}"])) {
