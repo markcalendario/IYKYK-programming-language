@@ -8,6 +8,7 @@ import {
   Assignment,
   BinaryExpression,
   Bool,
+  Bounce,
   Conditional,
   ConstantAssignment,
   Dead,
@@ -1060,6 +1061,11 @@ export default class Parser {
     return statements;
   }
 
+  parseBounce() {
+    this.nextToken();
+    return new Bounce(this.parseExpressions());
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.matchToken(TokensList.lit)) {
@@ -1131,6 +1137,10 @@ export default class Parser {
     // Anonymous Statement
     else if (this.matchToken(TokensList["{"])) {
       return this.parseAnonStatement();
+    }
+    // Return
+    else if (this.matchToken(TokensList.bounce)) {
+      return this.parseBounce();
     }
     // Expression
     else {

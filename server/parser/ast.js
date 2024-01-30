@@ -196,13 +196,9 @@ export class Htmlize {
   }
 }
 
-export class HtmlizeTag {
-  constructor(tag, attributes) {
-    this.node = "HTMLizeTag";
-    this.tag = tag;
-
-    for (const attribute of attributes) {
-      this[attribute].key = attribute.value;
-    }
+export class Bounce {
+  constructor(expression) {
+    this.node = "Bounce";
+    this.expression = expression;
   }
 }
