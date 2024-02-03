@@ -20,11 +20,13 @@ import {
   Gotcha,
   Htmlize,
   Identifier,
+  MultiComment,
   NegativeFloat,
   NegativeIdentifier,
   NegativeNumber,
   Number,
   Relapse,
+  SingleComment,
   Slay,
   Spill,
   String,
@@ -1116,6 +1118,35 @@ export default class Parser {
     return new Bet(value, valueType, expression);
   }
 
+  parseSingleLineComment() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList.Comment_Single_Content)) {
+      return this.raiseExpectation(TokensList.Comment_Single_Content);
+    }
+    const content = this.peekCurrentLexeme();
+    this.nextToken();
+    return new SingleComment(content);
+  }
+
+  parseMultiLineComment() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList.Comment_Multi_Content)) {
+      return this.raiseExpectation(TokensList.Comment_Multi_Content);
+    }
+
+    const content = this.peekCurrentLexeme();
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["*/"])) {
+      return this.raiseExpectation(TokensList["*/"]);
+    }
+    this.nextToken();
+
+    return new MultiComment(content);
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.matchToken(TokensList.lit)) {
@@ -1195,6 +1226,14 @@ export default class Parser {
     // Bet
     else if (this.matchToken(TokensList.bet)) {
       return this.parseBet();
+    }
+    // Single Comment
+    else if (this.matchToken(TokensList["//"])) {
+      return this.parseSingleLineComment();
+    }
+    // Multi Comment
+    else if (this.matchToken(TokensList["/*"])) {
+      return this.parseMultiLineComment();
     }
     // Expression
     else {

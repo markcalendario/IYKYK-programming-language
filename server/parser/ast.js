@@ -205,11 +205,26 @@ export class Bounce {
 
 export class Bet {
   constructor(value, valueType, expression) {
+    this.node = "Bet";
     this.value = {
       value,
       valueType
     };
 
     this.expression = expression;
+  }
+}
+
+export class SingleComment {
+  constructor(content) {
+    this.node = "SingleComment";
+    this.content = content;
+  }
+}
+
+export class MultiComment {
+  constructor(content) {
+    this.node = "MultiComment";
+    this.content = content;
   }
 }
