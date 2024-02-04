@@ -5,11 +5,10 @@
 .home {
   background-color: colors.$primary;
   min-height: 100vh;
+  padding: 70px 0;
 
   .container {
     @include responsive.container;
-
-    padding: 100px 0;
 
     .wrapper {
       text-align: center;
@@ -20,12 +19,12 @@
       border-radius: 7px;
       flex-direction: column;
       gap: 20px;
-      max-width: 500px;
+      max-width: 450px;
 
       .imageContainer {
         position: relative;
-        width: 100px;
-        height: 100px;
+        width: 70px;
+        height: 70px;
         margin: auto;
 
         .logo {

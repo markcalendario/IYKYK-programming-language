@@ -65,18 +65,21 @@ export default function Home() {
                 fill
               />
             </div>
-            <p>If You Know, You Know Lexical Analyzer</p>
+            <div styles={styles.texts}>
+              <h1 className={styles.title}>IYKYK</h1>
+              <p className={styles.description}>If You Know You Know</p>
+            </div>
             <Input
               placeholder="Session ID"
               value={sessionId}
               onChange={handleSessionIdChange}
             />
             <Button className={styles.join} onClick={handleConnectSession}>
-              Join Session
+              Join Room
             </Button>
             <hr />
             <Button className={styles.createNew} onClick={handleCreateSession}>
-              Create Session
+              Create Room
             </Button>
           </div>
         </div>
