@@ -3,8 +3,10 @@
 @use "../styles/layouts/responsive" as responsive;
 
 .home {
-  background-color: colors.$primary;
-  min-height: 100vh;
+  background-image: url("/assets/images/background.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: calc(100vh - 93.33px);
   padding: 70px 0;
 
   .container {
@@ -12,7 +14,7 @@
 
     .wrapper {
       text-align: center;
-      padding: 70px 30px;
+      padding: 40px 30px;
       display: flex;
       margin: auto;
       background-color: colors.$slate;

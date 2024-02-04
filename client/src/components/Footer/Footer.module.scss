@@ -1,0 +1,36 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/layouts/responsive" as responsive;
+
+.footer {
+  background-color: colors.$primary-variant;
+  padding: 10px 0;
+
+  .container {
+    @include responsive.container;
+
+    .wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .left {
+        .title {
+          color: colors.$slate;
+          font-weight: 900;
+        }
+
+        .description,
+        .copyright {
+          color: colors.$slate-3;
+        }
+      }
+
+      .right {
+        i {
+          color: colors.$slate-3;
+          font-size: x-large;
+        }
+      }
+    }
+  }
+}

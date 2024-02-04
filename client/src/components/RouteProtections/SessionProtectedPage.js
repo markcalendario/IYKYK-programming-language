@@ -21,7 +21,7 @@ export default function SessionProtectedPage({ children }) {
     socket.on("validateSession", handleReceiveValidateSession);
   }, []);
 
-  if (doesSessionExist === null) {
+  if (doesSessionExist === null || true) {
     return <p>Loading...</p>;
   }
 
