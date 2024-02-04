@@ -1077,6 +1077,13 @@ export default class Parser {
     }
     this.nextToken();
 
+    const expression = this.beginParsingExpressions();
+
+    if (!this.matchToken(TokensList[","])) {
+      this.raiseExpectation(TokensList[","]);
+    }
+    this.nextToken();
+
     if (
       !this.matchToken(TokensList.Identifier) &&
       !this.matchToken(TokensList['"'])
@@ -1097,13 +1104,6 @@ export default class Parser {
     }
 
     this.nextToken();
-
-    if (!this.matchToken(TokensList[","])) {
-      this.raiseExpectation(TokensList[","]);
-    }
-    this.nextToken();
-
-    const expression = this.beginParsingExpressions();
 
     if (!this.matchToken(TokensList[")"])) {
       this.raiseExpectation(TokensList[")"]);
