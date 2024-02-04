@@ -34,7 +34,7 @@ export default function LexerPopup({ isVisible, toggleLexer, sessionId }) {
     <div className={styles.lexerPopup}>
       <div className={styles.top}>
         <h1>Lexer Result</h1>
-        <IconButton onClick={toggleLexer} icon="fa-pause" />
+        <IconButton onClick={toggleLexer} icon="fas fa-pause" />
       </div>
       <Highlight type={success ? "success" : "error"} message={message} />
       <TokensTable tokens={tokens} />

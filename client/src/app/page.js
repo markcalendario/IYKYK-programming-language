@@ -2,6 +2,7 @@
 
 import Button from "@/components/Buttons/Buttons.js";
 import Input from "@/components/Inputs/Inputs.js";
+import Navbar from "@/components/Navbar/Navbar.js";
 import Popup, { usePopup } from "@/components/Popup/Popup.js";
 import socket from "@/components/Socket/Socket.js";
 import Image from "next/image.js";
@@ -55,6 +56,7 @@ export default function Home() {
   return (
     <Fragment>
       <Popup isVisible={isPopupVisible} message={message} />
+      <Navbar />
       <div className={styles.home}>
         <div className={styles.container}>
           <div className={styles.wrapper}>

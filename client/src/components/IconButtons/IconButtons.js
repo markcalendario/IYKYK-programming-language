@@ -5,7 +5,7 @@ export default function IconButton({ title, onClick, icon }) {
     <i
       onClick={onClick}
       title={title}
-      className={`fas ${icon} fa-fw ${styles.iconButton}`}
+      className={`${icon} fa-fw ${styles.iconButton}`}
     />
   );
 }

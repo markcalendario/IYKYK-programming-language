@@ -36,7 +36,7 @@ export default function ParserPopup({ isVisible, toggleParser, sessionId }) {
         <div className={styles.wrapper}>
           <div className={styles.heading}>
             <h1>Parser Result</h1>
-            <IconButton icon="fa-times" onClick={toggleParser} />
+            <IconButton icon="fas fa-times" onClick={toggleParser} />
           </div>
           <div className={styles.body}>
             <Highlight
