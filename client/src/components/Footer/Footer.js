@@ -2,6 +2,10 @@ import IconButton from "../IconButtons/IconButtons.js";
 import styles from "./Footer.module.scss";
 
 export default function Footer() {
+  const onGithubClick = () => {
+    window.open(process.env.NEXT_PUBLIC_GITHUB, "_blank");
+  };
+
   return (
     <div className={styles.footer}>
       <div className={styles.container}>
@@ -14,7 +18,7 @@ export default function Footer() {
             </p>
           </div>
           <div className={styles.right}>
-            <IconButton icon="fab fa-github" />
+            <IconButton onClick={onGithubClick} icon="fab fa-github" />
           </div>
         </div>
       </div>
