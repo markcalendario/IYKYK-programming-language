@@ -25,12 +25,14 @@ import {
   NegativeIdentifier,
   NegativeNumber,
   Number,
+  Periodt,
   Relapse,
   SingleComment,
   Slay,
   Spill,
   String,
   Sus,
+  Swerve,
   UnaryExpression,
   VariableDeclaration
 } from "./ast.js";
@@ -1178,6 +1180,28 @@ export default class Parser {
     return new MultiComment(content);
   }
 
+  parseSwerve() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+    this.nextToken();
+
+    return new Swerve();
+  }
+
+  parsePeriodt() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList[";"])) {
+      this.raiseExpectation(TokensList[";"]);
+    }
+    this.nextToken();
+
+    return new Periodt();
+  }
+
   parseStatements() {
     // Variable assignment
     if (this.matchToken(TokensList.lit)) {
@@ -1233,6 +1257,14 @@ export default class Parser {
     // Relapse
     else if (this.matchToken(TokensList.relapse)) {
       return this.parseRelapse();
+    }
+    // Swerve
+    else if (this.matchToken(TokensList.swerve)) {
+      return this.parseSwerve();
+    }
+    // Periodt
+    else if (this.matchToken(TokensList.periodt)) {
+      return this.parseSwerve();
     }
     // Flex
     else if (this.matchToken(TokensList.flex)) {

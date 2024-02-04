@@ -228,3 +228,15 @@ export class MultiComment {
     this.content = content;
   }
 }
+
+export class Swerve {
+  constructor() {
+    this.node = "Swerve";
+  }
+}
+
+export class Periodt {
+  constructor() {
+    this.node = "Swerve";
+  }
+}
