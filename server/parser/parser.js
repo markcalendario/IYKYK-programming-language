@@ -859,30 +859,32 @@ export default class Parser {
     }
     this.nextToken();
 
-    // as
-    if (!this.matchToken(TokensList.as)) {
-      this.raiseExpectation(TokensList.as);
+    // as : optional
+    let asType = null;
+    let asValue = null;
+
+    if (this.matchToken(TokensList.as)) {
+      this.nextToken();
+
+      if (!this.matchToken(TokensList[":"])) {
+        this.raiseExpectation(TokensList[":"]);
+      }
+      this.nextToken();
+
+      if (!this.matchToken(TokensList.Identifier)) {
+        this.raiseExpectation(TokensList.Identifier);
+      }
+
+      asType = this.peekCurrentToken();
+      asValue = this.peekCurrentLexeme();
+
+      this.nextToken();
+
+      if (!this.matchToken(TokensList[";"])) {
+        this.raiseExpectation(TokensList[";"]);
+      }
+      this.nextToken();
     }
-    this.nextToken();
-
-    if (!this.matchToken(TokensList[":"])) {
-      this.raiseExpectation(TokensList[":"]);
-    }
-    this.nextToken();
-
-    if (!this.matchToken(TokensList.Identifier)) {
-      this.raiseExpectation(TokensList.Identifier);
-    }
-
-    const asType = this.peekCurrentToken();
-    const asValue = this.peekCurrentLexeme();
-
-    this.nextToken();
-
-    if (!this.matchToken(TokensList[";"])) {
-      this.raiseExpectation(TokensList[";"]);
-    }
-    this.nextToken();
 
     // worse
     if (!this.matchToken(TokensList.worse)) {
