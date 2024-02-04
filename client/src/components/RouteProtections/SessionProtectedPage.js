@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation.js";
 import { useEffect, useState } from "react";
+import FullPageLoader from "../FullPageLoader/FullPageLoader.js";
 import socket from "../Socket/Socket.js";
 
 export default function SessionProtectedPage({ children }) {
@@ -21,8 +22,8 @@ export default function SessionProtectedPage({ children }) {
     socket.on("validateSession", handleReceiveValidateSession);
   }, []);
 
-  if (doesSessionExist === null || true) {
-    return <p>Loading...</p>;
+  if (doesSessionExist === null) {
+    return <FullPageLoader />;
   }
 
   if (doesSessionExist === false) {

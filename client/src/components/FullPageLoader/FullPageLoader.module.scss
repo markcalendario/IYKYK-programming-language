@@ -1,0 +1,63 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+
+@keyframes stroke {
+  0% {
+    fill: rgba(255, 255, 255, 0);
+    stroke: rgba(189, 189, 189, 1);
+    stroke-dashoffset: 25%;
+    stroke-dasharray: 0 50%;
+    stroke-width: 2;
+  }
+  50% {
+    fill: rgba(255, 255, 255, 0);
+    stroke: rgba(189, 189, 189, 1);
+  }
+  70% {
+    fill: rgba(255, 255, 255, 0);
+    stroke: rgba(189, 189, 189, 1);
+    stroke-width: 3;
+  }
+  80% {
+    fill: rgba(255, 255, 255, 1);
+    stroke: rgba(189, 189, 189, 0);
+    stroke-dashoffset: -25%;
+    stroke-dasharray: 50% 0;
+    stroke-width: 0;
+  }
+
+  100% {
+    fill: rgba(255, 255, 255, 1);
+    stroke: rgba(189, 189, 189, 0);
+    stroke-dashoffset: -25%;
+    stroke-dasharray: 50% 0;
+    stroke-width: 0;
+  }
+}
+
+.wrapper {
+  background-color: colors.$primary;
+  height: 100vh;
+  background-image: url("/assets/images/background.svg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+
+  svg {
+    font-weight: 900;
+    width: 100%;
+  }
+  svg text {
+    animation: stroke 1.5s infinite alternate;
+    stroke-width: 2;
+    stroke: colors.$slate-3;
+    font-size: 100px;
+  }
+
+  p {
+    color: colors.$slate;
+  }
+}
