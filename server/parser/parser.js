@@ -70,6 +70,10 @@ export default class Parser {
     this.parsedTokens.push(this.tokens.shift());
   }
 
+  prevToken() {
+    this.tokens.unshift(this.parsedTokens.pop());
+  }
+
   matchToken(expectedToken) {
     return this.peekCurrentToken() === expectedToken;
   }
@@ -508,16 +512,16 @@ export default class Parser {
   }
 
   parseIdentifierStart() {
+    const identifier = this.peekCurrentLexeme();
+    this.nextToken();
+
     if (
       !assignmentTokens.includes(this.peekCurrentToken()) &&
-      !this.matchToken(["("])
+      !this.matchToken(TokensList["("])
     ) {
+      this.prevToken();
       return this.parseExpressions();
     }
-
-    const identifier = this.peekCurrentLexeme();
-
-    this.nextToken();
 
     // For assignment statements
 
@@ -599,11 +603,37 @@ export default class Parser {
       TokensList.Identifier,
       TokensList.Number,
       TokensList.Float,
-      TokensList.String
+      TokensList['"']
     ];
 
     while (validTypes.includes(this.peekCurrentToken())) {
-      params.push(new Identifier(this.peekCurrentLexeme()));
+      // Boolean
+      if (
+        this.matchToken(
+          TokensList["cap"] || this.matchToken(TokensList["real"])
+        )
+      ) {
+        params.push(new Bool(this.peekCurrentLexeme()));
+      }
+      // Identifier
+      else if (this.matchToken(TokensList.Identifier)) {
+        params.push(new Identifier(this.peekCurrentLexeme()));
+      }
+      // Number
+      else if (this.matchToken(TokensList.Number)) {
+        params.push(new Number(this.peekCurrentLexeme()));
+      }
+      // Float
+      else if (this.matchToken(TokensList.Float)) {
+        params.push(new Float(this.peekCurrentLexeme()));
+      }
+      // String
+      else if (this.matchToken(TokensList['"'])) {
+        this.nextToken();
+        params.push(new String(this.peekCurrentLexeme()));
+        this.nextToken();
+      }
+
       this.nextToken();
 
       if (!this.matchToken(TokensList[","])) {
