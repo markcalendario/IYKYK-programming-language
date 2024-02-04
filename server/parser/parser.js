@@ -609,9 +609,8 @@ export default class Parser {
     while (validTypes.includes(this.peekCurrentToken())) {
       // Boolean
       if (
-        this.matchToken(
-          TokensList["cap"] || this.matchToken(TokensList["real"])
-        )
+        this.matchToken(TokensList["cap"]) ||
+        this.matchToken(TokensList["real"])
       ) {
         params.push(new Bool(this.peekCurrentLexeme()));
       }
