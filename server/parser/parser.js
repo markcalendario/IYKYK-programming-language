@@ -663,7 +663,7 @@ export default class Parser {
     return new Conditional(conditions, statements);
   }
 
-  parseConditionalYikes() {
+  parseConditionalYas() {
     this.nextToken();
 
     if (!this.matchToken(TokensList["{"])) {
@@ -1175,13 +1175,13 @@ export default class Parser {
     // Yeet or Yas
     else if (
       this.matchToken(TokensList.yeet) ||
-      this.matchToken(TokensList.yas)
+      this.matchToken(TokensList.yikes)
     ) {
       return this.parseConditionals();
     }
-    // Yikes
-    else if (this.matchToken(TokensList.yikes)) {
-      return this.parseConditionalYikes();
+    // Yas
+    else if (this.matchToken(TokensList.yas)) {
+      return this.parseConditionalYas();
     }
     // Sus
     else if (this.matchToken(TokensList.sus)) {
