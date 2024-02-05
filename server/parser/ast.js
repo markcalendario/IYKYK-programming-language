@@ -115,10 +115,27 @@ export class FunctionCall {
   }
 }
 
-export class Conditional {
-  constructor(condition, statements) {
-    this.node = "Conditional";
+export class YeetConditional {
+  constructor(condition, statements, subCondition) {
+    this.node = "YeetConditional";
     this.condition = condition;
+    this.statements = statements;
+    this.subCondition = subCondition;
+  }
+}
+
+export class YikesConditional {
+  constructor(condition, statements, subCondition) {
+    this.node = "YikesConditional";
+    this.condition = condition;
+    this.statements = statements;
+    this.subCondition = subCondition;
+  }
+}
+
+export class YasConditional {
+  constructor(statements) {
+    this.node = "YasConditional";
     this.statements = statements;
   }
 }

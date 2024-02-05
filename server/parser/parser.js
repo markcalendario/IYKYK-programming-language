@@ -10,7 +10,6 @@ import {
   BinaryExpression,
   Bool,
   Bounce,
-  Conditional,
   ConstantAssignment,
   Dead,
   Flex,
@@ -34,7 +33,10 @@ import {
   Sus,
   Swerve,
   UnaryExpression,
-  VariableDeclaration
+  VariableDeclaration,
+  YasConditional,
+  YeetConditional,
+  YikesConditional
 } from "./ast.js";
 
 export default class Parser {
@@ -82,6 +84,11 @@ export default class Parser {
 
   raiseExpectation(expectedToken) {
     const message = `Syntax error occured. Expecting ${expectedToken} after ${this.peekPrevToken()} "${this.peekPrevLexeme()}" but found ${this.peekCurrentToken()} at line ${this.peekCurrentLine()}.`;
+    throw new Error(message);
+  }
+
+  raiseUnexpectation(unexpectedToken) {
+    const message = `Syntax error occured. Unexpected ${unexpectedToken} after ${this.peekPrevToken()} "${this.peekPrevLexeme()}".`;
     throw new Error(message);
   }
 
@@ -665,7 +672,7 @@ export default class Parser {
     return this.beginParsingExpressions();
   }
 
-  parseConditionals() {
+  ParseConditonalYeet() {
     this.nextToken();
 
     if (!this.matchToken(TokensList["("])) {
@@ -691,7 +698,56 @@ export default class Parser {
     const statements = this.parseBlock();
     this.nextToken();
 
-    return new Conditional(conditions, statements);
+    let subCondition = null;
+
+    if (this.matchToken(TokensList.yikes)) {
+      subCondition = this.parseConditionalYikes();
+    }
+
+    if (this.matchToken(TokensList.yas)) {
+      subCondition = this.parseConditionalYas();
+    }
+
+    return new YeetConditional(conditions, statements, subCondition);
+  }
+
+  parseConditionalYikes() {
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["("])) {
+      this.raiseExpectation(TokensList["("]);
+    }
+
+    this.nextToken();
+
+    const conditions = this.parseConditions();
+
+    if (!this.matchToken(TokensList[")"])) {
+      this.raiseExpectation(TokensList[")"]);
+    }
+
+    this.nextToken();
+
+    if (!this.matchToken(TokensList["{"])) {
+      this.raiseExpectation(TokensList["{"]);
+    }
+
+    this.nextToken();
+
+    const statements = this.parseBlock();
+    this.nextToken();
+
+    let subCondition = null;
+
+    if (this.matchToken(TokensList.yikes)) {
+      subCondition = this.parseConditionalYikes();
+    }
+
+    if (this.matchToken(TokensList.yas)) {
+      subCondition = this.parseConditionalYas();
+    }
+
+    return new YikesConditional(conditions, statements, subCondition);
   }
 
   parseConditionalYas() {
@@ -706,7 +762,7 @@ export default class Parser {
     const statements = this.parseBlock();
     this.nextToken();
 
-    return new Conditional(null, statements);
+    return new YasConditional(statements);
   }
 
   parseDelayFunction() {
@@ -1227,16 +1283,9 @@ export default class Parser {
     else if (this.matchToken(TokensList.Identifier)) {
       return this.parseIdentifierStart();
     }
-    // Yeet or Yas
-    else if (
-      this.matchToken(TokensList.yeet) ||
-      this.matchToken(TokensList.yikes)
-    ) {
-      return this.parseConditionals();
-    }
-    // Yas
-    else if (this.matchToken(TokensList.yas)) {
-      return this.parseConditionalYas();
+    // Yeet
+    else if (this.matchToken(TokensList.yeet)) {
+      return this.ParseConditonalYeet();
     }
     // Sus
     else if (this.matchToken(TokensList.sus)) {
