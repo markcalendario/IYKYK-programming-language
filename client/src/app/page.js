@@ -1,6 +1,7 @@
 "use client";
 
 import Button from "@/components/Buttons/Buttons.js";
+import FirstUseWelcomer from "@/components/FirstUseWelcomer/FirstUseWelcomer.js";
 import Footer from "@/components/Footer/Footer.js";
 import Input from "@/components/Inputs/Inputs.js";
 import Popup, { usePopup } from "@/components/Popup/Popup.js";
@@ -11,6 +12,7 @@ import styles from "./page.module.scss";
 
 export default function Home() {
   const [sessionId, setSessionId] = useState("");
+  const [isFirstUse, setIsFirstUse] = useState(null);
   const { isPopupVisible, setIsPopupVisible, message, setMessage } =
     usePopup(false);
 
@@ -51,7 +53,16 @@ export default function Home() {
   useEffect(() => {
     socket.on("createSession", handleReceiveCreateSession);
     socket.on("validateSession", handleReceiveValidateSession);
+    setIsFirstUse(localStorage.getItem("NOT_FIRST_USE") === null);
   }, [sessionId]);
+
+  if (isFirstUse === null) {
+    return;
+  }
+
+  if (isFirstUse) {
+    return <FirstUseWelcomer />;
+  }
 
   return (
     <Fragment>

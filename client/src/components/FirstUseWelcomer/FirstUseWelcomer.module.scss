@@ -1,0 +1,102 @@
+@use "../../styles/abstracts/variables-colors" as colors;
+@use "../../styles/abstracts/mixins-screens" as screens;
+
+@keyframes stroke {
+  0% {
+    fill: rgba(255, 255, 255, 0);
+    stroke: rgba(189, 189, 189, 1);
+    stroke-dashoffset: 25%;
+    stroke-dasharray: 0 50%;
+    stroke-width: 2;
+  }
+  50% {
+    fill: rgba(255, 255, 255, 0);
+    stroke: rgba(189, 189, 189, 1);
+  }
+  70% {
+    fill: rgba(255, 255, 255, 0);
+    stroke: rgba(189, 189, 189, 1);
+    stroke-width: 3;
+  }
+  80% {
+    fill: rgba(255, 255, 255, 1);
+    stroke: rgba(189, 189, 189, 0);
+    stroke-dashoffset: -25%;
+    stroke-dasharray: 50% 0;
+    stroke-width: 0;
+  }
+
+  100% {
+    fill: rgba(255, 255, 255, 1);
+    stroke: rgba(189, 189, 189, 0);
+    stroke-dashoffset: -25%;
+    stroke-dasharray: 50% 0;
+    stroke-width: 0;
+  }
+}
+
+.wrapper {
+  background-color: colors.$primary;
+  animation: backgroundAnimation 1s forwards 8s
+    cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center vertically */
+  background-image: url("/assets/images/loader-background.svg");
+
+  @keyframes backgroundAnimation {
+    from {
+      background-image: url("/assets/images/loader-background.svg");
+    }
+
+    to {
+      background-image: url("/assets/images/background.svg");
+    }
+  }
+
+  .container {
+    text-align: center;
+    width: 100%;
+
+    svg {
+      font-weight: 900;
+      width: 100%;
+    }
+
+    svg text {
+      animation: stroke 10s forwards alternate;
+      stroke-width: 2;
+      stroke: colors.$slate-3;
+      font-size: 75px;
+
+      @include screens.tabletAndDesktop {
+        font-size: 100px;
+      }
+    }
+
+    p {
+      color: colors.$slate;
+    }
+
+    button {
+      animation: buttonAnim 1s 9s forwards;
+      visibility: hidden;
+      opacity: 0;
+      margin-top: 20px;
+    }
+
+    @keyframes buttonAnim {
+      from {
+        visibility: hidden;
+        opacity: 0;
+      }
+      to {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  }
+}
