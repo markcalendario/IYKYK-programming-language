@@ -1,5 +1,6 @@
 @use "../../styles/abstracts/variables-colors" as colors;
 @use "../../styles/layouts/responsive" as responsive;
+@use "../../styles/abstracts/mixins-screens" as screens;
 
 .footer {
   background-color: colors.$primary-variant;
@@ -10,8 +11,14 @@
 
     .wrapper {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 10px;
+
+      @include screens.tabletAndDesktop {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
 
       .left {
         .title {
@@ -26,9 +33,17 @@
       }
 
       .right {
-        i {
+        a {
           color: colors.$slate-3;
-          font-size: x-large;
+          padding: 7px;
+          background-color: colors.$slate-7;
+          border-radius: 3px;
+          text-decoration: none;
+          display: inline-block;
+
+          &:hover {
+            background-color: colors.$slate-6;
+          }
         }
       }
     }

@@ -1,4 +1,3 @@
-import IconButton from "../IconButtons/IconButtons.js";
 import styles from "./Footer.module.scss";
 
 export default function Footer() {
@@ -18,7 +17,12 @@ export default function Footer() {
             </p>
           </div>
           <div className={styles.right}>
-            <IconButton onClick={onGithubClick} icon="fab fa-github" />
+            <a
+              href={process.env.NEXT_PUBLIC_GITHUB}
+              target="_blank"
+              rel="noopener noreferrer">
+              github.com/markcalendario/IYKYK-programming-language
+            </a>
           </div>
         </div>
       </div>
