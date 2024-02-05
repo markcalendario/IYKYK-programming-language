@@ -45,7 +45,6 @@
   display: flex;
   justify-content: center;
   align-items: center; // Center vertically
-  background-image: url("/assets/images/background.svg"); // Preload
   background-image: url("/assets/images/loader-background.svg");
 
   @keyframes backgroundAnimation {

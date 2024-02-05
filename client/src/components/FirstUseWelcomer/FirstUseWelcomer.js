@@ -4,9 +4,6 @@ import styles from "./FirstUseWelcomer.module.scss";
 
 // Simulate loading
 export default function FirstUseWelcomer() {
-  const [background, setBackground] = useState(
-    "/assets/images/loader-background.svg"
-  );
   const [currentTextIdx, setCurrentTextIdx] = useState(0);
   const text = [
     "Welcome to IYKYK Portal.",
@@ -22,12 +19,17 @@ export default function FirstUseWelcomer() {
   };
 
   useEffect(() => {
+    // Preload the background image
+    const img = new Image();
+    img.src = "/assets/images/background.svg";
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTextIdx((prev) => (prev + 1) % text.length);
     }, 2000);
 
     if (currentTextIdx >= text.length - 1) {
-      setBackground("/assets/images/background.svg");
       clearInterval(interval);
     }
 
