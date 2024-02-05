@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Button from "../Buttons/Buttons.js";
 import styles from "./FirstUseWelcomer.module.scss";
 
@@ -10,7 +10,13 @@ export default function FirstUseWelcomer() {
     "Initializing for first use...",
     "Setting up the lexer...",
     "Setting up the parser...",
-    "Components loaded! Feel free to reach Mark Kenneth Calendario for more info."
+    <Fragment>
+      Components loaded! Feel free to reach{" "}
+      <a target="_blank" href="https://github.com/markcalendario">
+        Calendario, Mark Kenneth
+      </a>{" "}
+      for more info.
+    </Fragment>
   ];
 
   const handleStartPortal = () => {
