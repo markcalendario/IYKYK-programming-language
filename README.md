@@ -45,7 +45,7 @@ The result of syntax analyzer will show the parse tree if the code structure is 
 
 [Lexer Documentation](https://github.com/markcalendario/IYKYK-programming-language/blob/main/docs/documents/IYKYK%20Programming%20Language%20Documentation%20-%20GROUP%202.pdf)
 
-[Parser Documentation](https://github.com/markcalendario/IYKYK-programming-language/blob/main/docs/documents/IYKYK%20Programming%20Language%20Documentation%20-%20GROUP%202.pdf)
+[Parser Documentation](https://github.com/markcalendario/IYKYK-programming-language/blob/main/docs/documents/IYKYK%20Syntax%20Analyzer%20Documentation%20-%20Group%202%20-%20BSCS%203-1N.pdf)
 
 
 ## License
