@@ -10,7 +10,7 @@ export default function FirstUseWelcomer() {
     "Initializing for first use...",
     "Setting up the lexer...",
     "Setting up the parser...",
-    <Fragment>
+    <Fragment key={Math.random()}>
       Components loaded! Feel free to reach{" "}
       <a target="_blank" href="https://github.com/markcalendario">
         Calendario, Mark Kenneth
