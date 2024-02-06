@@ -1,0 +1,41 @@
+// Goal: Access the modelType field in the model attribute.
+
+// ===============================
+// Problem: Use of Exception Handling
+// ===============================
+
+lit car = {
+   color: "black",
+   model: {
+      carName: "Vios",
+      serial: "A12"
+   },
+   brand: "Toyota"
+}
+
+sus {
+    lit modelType = car["model"]["modelType"]
+}
+dead {
+    print("Non existent field.")
+    lit modelType = None
+}
+
+// ===============================
+// Other way: IF ELSE
+// ===============================
+
+yeet (car.model): 
+   yeet (car["model"]["modelType"]):   
+      modelType = car["model"]["modelType"] 
+   yas: 
+      modelType = None
+yas: 
+   modelType = None
+
+// ===============================
+// Solution: Undefined Safety Operator
+// ===============================
+
+modelType = car.model#.modelType
+flex(modelType); // undefined

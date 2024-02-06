@@ -1,0 +1,34 @@
+delay routine intensiveFunction() {
+  lit val = 4?val;
+  flex("Intensive computation here!");
+  bounce val;
+}
+
+chill intensiveFunction();
+
+// =========================
+// Other example
+// =========================
+
+chilel functionA();
+chill functionB();
+chill functionC();
+chill functionD();
+chill functionE();
+
+delay routine functionA() {
+  flex("Callback 1 completed");
+}
+delay routine functionB() {
+  flex("Callback 2 completed");
+}
+delay routine functionC() {
+  flex("Callback 3 completed");
+}
+delay routine functionD() {
+  flex("Callback 4 completed");
+}
+delay routine functionE() {
+  flex("Callback 5 completed");
+}
+

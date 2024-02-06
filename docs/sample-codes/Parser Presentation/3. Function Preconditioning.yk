@@ -1,0 +1,21 @@
+routine divideNumbers(x, y) {
+ bet(y != 0, "Division by zero is a no-go!"); // Preconditioning
+ bounce x / y;
+}
+
+divideNumbers(1, 0);
+
+// ==================
+// Other use cases
+// ==================
+
+routine withdrawMoney(accountBalance, amountToWithdraw) { 
+   // Preconditions 
+   bet(accountBalance <= amountToWithdraw, "Insufficient funds!"); 
+   bet(amountToWithdraw > 0, "Invalid amount to withdraw"); 
+
+   lit newBalance = accountBalance - amountToWithdraw;
+   bounce newBalance; 
+}
+
+withdraw(10000, 20000); // Insufficient funds!

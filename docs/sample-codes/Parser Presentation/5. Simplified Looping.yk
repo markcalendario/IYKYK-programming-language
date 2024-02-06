@@ -1,0 +1,19 @@
+// Simplified Looping
+// Automatic increment and decrement based on the worse and recover attribute.
+
+relapse(worse; 1; recover: 5) {
+  flex("Hello");
+}
+
+// The As Parameter
+
+relapse(worse: 5; recover: 1; as: x) {
+   flex("Iteration: " + x);
+}
+
+// With Stepwise Increment/Decrement
+
+relapes(as: x; worse: 1; recover: 10) {
+  flex("Iteration: " + x);
+  x>>2;
+}

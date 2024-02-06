@@ -1,0 +1,12 @@
+// Simpler use case
+
+lit age = 30;
+flex("Your age in 5 years is: ",  age>>5);
+flex("While your age 5 years ago is: ", age<<5);
+
+// Use case in looping
+
+relapse(as: x; worse: 0; recover: 100000) {
+   flex("Loop me!");
+   x >> 100; 
+}

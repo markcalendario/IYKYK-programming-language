@@ -1,0 +1,48 @@
+// ==================
+// The problem
+// ==================
+
+lit num1 = flex("Enter first number: ");
+lit num2 = flex("Enter second number: ");
+lit result;
+
+sus {
+  result = num1 / num2;    
+} 
+dead (e) 
+{
+  flex("An error occured: ", e);
+}
+gotcha 
+{
+  flex("Error cleaned.");
+}
+
+flex(result);
+
+// ==================
+// Preconditioning solution
+// ==================
+
+routine divideNumbers(x, y) {
+ bet(y !== 0, "Division by zero is a no-go!"); // Preconditioning
+ bounce x / y;
+}
+
+result = routine(1, 0);
+
+// ==================
+// Other use cases
+// ==================
+
+routine withdrawMoney(accountBalance, amountToWithdraw) { 
+   // Preconditions 
+   bet(accountBalance <= amountToWithdraw, "Insufficient funds!"); 
+   bet(amountToWithdraw > 0, "Invalid amount to withdraw"); 
+
+   lit newBalance = accountBalance - amountToWithdraw;
+   bounce newBalance; 
+}
+
+withdraw(10000, 20000); // Insufficient funds!
+withdraw(10000, -50); // Invalid amount to withdraw!

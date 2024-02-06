@@ -1,0 +1,87 @@
+// Assume each function has an intensive computation
+// And they take time to complete.
+
+// =====================
+// Problem: Using of pointers
+// Languages: C, C++
+// =====================
+
+/*
+void anotherFunction(int returnedValue) { 
+  printf("Now, it’s my turn! %d", &returnedValue)
+}
+// A callback function
+void intensiveFunction(void (*ptr)())
+{
+  printf("Intensive computation here!");
+  (*ptr)(something!); // pass to anotherFunction
+}
+int main()
+{
+  void (*ptr)() = &anotherFunction;
+  intensiveFunction(ptr);
+}
+*/
+
+// =========================
+// Solution: Simplified Callback
+// =========================
+
+delay routine intensiveFunction() {
+   flex("Intensive computation here!");
+   bounce something!
+}
+
+lit returnedValue = chill intensiveFunction();
+flex("Now, it’s my turn! " + returnedValue);
+
+// =====================
+// Problem: Nesting of functions
+// Languages: C# and Javascript
+// =====================
+
+/* 
+functionA(() => {
+   Console.WriteLine("Callback 1 completed");
+   functionB(() => {
+      Console.WriteLine("Callback 2 completed");
+      functionC(() => {
+         Console.WriteLine("Callback 3 completed");
+         functionD(() => {
+            Console.WriteLine("Callback 4 completed");
+            functionE(() => {
+               Console.WriteLine("Callback 5 completed");
+               Console.WriteLine("End OuterAsync");
+             });
+          });
+       });
+    });
+}); 
+*/
+
+// =========================
+// Solution: Simplified Callback
+// =========================
+
+chill functionA();
+chill functionB();
+chill functionC();
+chill functionD();
+chill functionE();
+
+delay routine functionA() {
+  flex("Callback 1 completed");
+}
+delay routine functionB() {
+  flex("Callback 2 completed");
+}
+delay routine functionC() {
+  flex("Callback 3 completed");
+}
+delay routine functionD() {
+  flex("Callback 4 completed");
+}
+delay routine functionE() {
+  flex("Callback 5 completed");
+}
+

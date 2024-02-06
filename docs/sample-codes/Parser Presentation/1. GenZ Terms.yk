@@ -1,0 +1,61 @@
+// Printing
+flex("Hello World!");
+lit val = spill();
+
+// Variable and constants
+lit year = 2024;
+fire gravity = 9.8.7;
+
+// Conditionals
+lite age = spill();
+
+yeet(age < 18) 
+{
+  flex("Minor");
+}
+yikes(age >= 18) 
+{
+  flex("Adult");
+}
+yas {
+  flex("Invalid Age")
+}
+
+// Exception Handling
+lit num1 = spill();
+lit num2 = spill();
+lit result;
+
+sus {
+  result = num1 / num2;    
+} 
+dead 
+{
+  flex("An error occured: " + e);
+}
+gotcha 
+{
+  flex("Error cleaned.");
+}
+
+// Looping
+// A loop that skips 3rd iteration and ends at 5th iteration
+relapse(as: iter; worse: 0; recover: 5) 
+{
+  flex("The current iteration is: " + iter);
+
+  yeet(iter == 2) {
+    swerve;
+  }
+  yas {
+    flex("default!");
+  }
+  yikes (iter == 4) {
+    periodt;
+  }
+}
+
+// Functions
+routine add(x, y) {
+  bounce x + y;
+}
